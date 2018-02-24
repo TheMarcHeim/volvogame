@@ -80,7 +80,8 @@ class Passenger {
 
 function getPassengers() {
     passengerList = [new Passenger([550,50], 4), 
-                     new Passenger([660,170], 3)];
+                     new Passenger([660,170], 3),
+                     new Passenger([1000,400], 0)];
     return passengerList;
 }
 
@@ -100,6 +101,12 @@ function drawPassengers(passengerList) {
         ctx.strokeStyle = '#000000';
         ctx.stroke();
     });
+}
+
+/// Manage UI
+
+function mouseHandler() {
+    
 }
 
 </script>
@@ -130,6 +137,6 @@ function drawPassengers(passengerList) {
 </head>
 <body onload="onload()">
     <img id="map" src="http://staticmap.openstreetmap.de/staticmap.php?center=40.714728,-73.998672&zoom=14&size=1920x700&maptype=mapnik" class="coveredImage">
-    <canvas id="canvas" class="coveringCanvas"></canvas>
+    <canvas id="canvas" class="coveringCanvas" onclick="mouseHandler()"></canvas>
 </body>
 </html>
