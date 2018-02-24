@@ -78,8 +78,8 @@ class Passenger {
 }
 
 function getPassengers() {
-    passengerList = [new Passenger([50,50], 4), 
-                     new Passenger([40,70], 3)];
+    passengerList = [new Passenger([150,50], 4), 
+                     new Passenger([140,70], 3)];
     return passengerList;
 }
 
@@ -89,10 +89,14 @@ function drawPassengers(passengerList) {
 
     var radius = 5;
 
+    ctx.lineWidth = 1;
     passengerList.forEach(passenger => {
         ctx.beginPath();
         var [x, y] = passenger.location;
         ctx.arc(x, y, radius, 0, 2*Math.PI);
+        ctx.fillStyle = '#00E000';
+        ctx.fill();
+        ctx.strokeStyle = '#000000';
         ctx.stroke();
     });
 }
