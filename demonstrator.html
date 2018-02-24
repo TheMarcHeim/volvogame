@@ -35,19 +35,22 @@ $(document).ready(function(){
 
     $(".options").attr("data-option", "driver");
     $(".options").html("I want to be driven");
-    $(".options").on("click", function() {
+
+    function clickEventHandler() {
         if ($(this).attr("data-option") == "driver") {
             //clearCanvases();
-            reset(0);
             $(this).attr("data-option", "passenger");
             $(this).html("I want to drive");
+            reset(0);
         } else {
             //clearCanvases();
-            reset(1);
             $(this).attr("data-option", "driver");
             $(this).html("I want to be driven");
+            reset(1);
         }
-    });
+    }
+
+    $(".options").on("click", clickEventHandler);
 });
 
 function getDirectDist() {
@@ -82,11 +85,11 @@ function clearCanvases() {
     ctx.beginPath();
 }
 
-function onMouseMove(e){
-	    updateStraightLines(e.pageX,e.pageY);
-		lastMouseX=e.pageX;
-		lastMouseY=e.pageY;
-	}
+function onMouseMove(e) {
+	updateStraightLines(e.pageX,e.pageY);
+	lastMouseX=e.pageX;
+	lastMouseY=e.pageY;
+}
 
 function setup()
 {
@@ -114,15 +117,13 @@ function setup()
 
 
 
-function reset(driving){
-	if(driving){
-	     setup();
-	     passengerList = getPassengers();
-	     drawPassengers(passengerList);
-	     drawPassengerArrows()
-	}else{
-		$("body").off();
-	    passengers = null;//just for testing
+function reset(driving) {
+	if (driving) {
+	    setup();
+	    passengerList = getPassengers();
+	    drawPassengers(passengerList);
+	    drawPassengerArrows();
+	} else {
 	    var canvas = document.getElementById("canvas");
 	    var ctx = canvas.getContext("2d");
 	    ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -135,10 +136,21 @@ function reset(driving){
 	    $('.start').remove();
 	    $('.target').remove();
 	    $('.passengertarget').remove();
-	    //$("body").removeClass("start");
-	    //$("body").removeClass("target");
-	    //$("body").removeClass("passengertarget");
-	}	
+	}
+
+    $(".options").on("click", function() {
+        if ($(this).attr("data-option") == "driver") {
+            //clearCanvases();
+            $(this).attr("data-option", "passenger");
+            $(this).html("I want to drive");
+            reset(0);
+        } else {
+            //clearCanvases();
+            $(this).attr("data-option", "driver");
+            $(this).html("I want to be driven");
+            reset(1);
+        }
+    });
 }
 
 function updateStraightLines(x,y){
@@ -439,20 +451,20 @@ function drawPassengers(passengerList) {
 
     });
 	//add start
-        var [sx, sy] = globalToLocal(start);
-        startHTML = `<div class="start"
-                              style="top: ` + sy + `px; left: ` + sx + `px;"
-                              >
-                         </div>`;
-        body.innerHTML += startHTML;
+    var [sx, sy] = globalToLocal(start);
+    startHTML = `<div class="start"
+                          style="top: ` + sy + `px; left: ` + sx + `px;"
+                          >
+                     </div>`;
+    body.innerHTML += startHTML;
 
 	//add target
-        var [ttx, tty] = globalToLocal(target);
-        targetHTML = `<div class="target" id="tFlag"
-                              style="top: ` + tty + `px; left: ` + ttx + `px;"
-                              >
-                         </div>`;
-        body.innerHTML += targetHTML;
+    var [ttx, tty] = globalToLocal(target);
+    targetHTML = `<div class="target" id="tFlag"
+                          style="top: ` + tty + `px; left: ` + ttx + `px;"
+                          >
+                     </div>`;
+    body.innerHTML += targetHTML;
 
     $(".passenger").on("click", function(e) {
         if (!finished) {
@@ -509,6 +521,7 @@ function drawPassengers(passengerList) {
         recomputeRoute(activePassengers());
     });
 }
+
 
 function activePassengers() {
     var list = [];
