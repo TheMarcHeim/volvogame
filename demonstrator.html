@@ -22,28 +22,45 @@ var start = [40.705086,-74.016711];
 var target = [40.734967,-73.992850];
 
 function onload(){
-     setup();
-     passengerList = getPassengers();
-     drawPassengers(passengerList);
-     drawPassengerArrows()
+    setup();  
+    passengerList = getPassengers();
+    drawPassengers(passengerList);
+    drawPassengerArrows()
      //drawRoute();
 //testrouting();
 }
 
 $(document).ready(function(){
+
     $(".options").attr("data-option", "driver");
     $(".options").html("I want to be driven");
     $(".options").on("click", function() {
-        console.log("AHDGADFG");
         if ($(this).attr("data-option") == "driver") {
+            clearCanvases();
+
             $(this).attr("data-option", "passenger");
             $(this).html("I want to drive");
         } else {
+            clearCanvases();
+
             $(this).attr("data-option", "driver");
             $(this).html("I want to be driven");
         }
     });
-})
+});
+
+function clearCanvases() {
+    var canvas = document.getElementById("canvas");
+    canvas.innerHTML = "";
+	var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    var icanvas = document.getElementById("icanvas");
+    icanvas.innerHTML = "";
+    ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+}
 
 function setup()
 {
@@ -64,9 +81,11 @@ function setup()
     ctx.lineTo(200,100);
     ctx.stroke();
 	$("body").mousemove(function(e) {
-	    updateStraightLines(e.pageX,e.pageY);
-		lastMouseX=e.pageX;
-		lastMouseY=e.pageY;
+        if ($(".options").attr("data-option") == "driver") {
+	        updateStraightLines(e.pageX,e.pageY);
+		    lastMouseX=e.pageX;
+		    lastMouseY=e.pageY;
+        }
 	})
 
 }
@@ -200,46 +219,43 @@ function localToGlobal(p){
 	return [py,px];
 }
 
-function getRouteData(pointlist, fun, ind){
-	if(pointlist.length<2){
+function getRouteData(pointlist, fun, ind) {
+	if (pointlist.length<2) {
 	    var canvas = document.getElementById("canvas");
 	    var ctx = canvas.getContext("2d");
 	    ctx.clearRect(0, 0, canvas.width, canvas.height);
 		lastInd = -1;
-	updateStraightLines(lastMouseX,lastMouseY);
-     drawPassengerArrows()
-	}else{
+	    updateStraightLines(lastMouseX,lastMouseY);
+        drawPassengerArrows();
+	} else {
 	  	var ghRouting = new GraphHopper.Routing({
 	      key: "792f5935-6974-4c19-9ada-2742bbcdc54f",
 	      vehicle: "car",
 	      elevation: false
 	    });
+
 		var arrayLength = pointlist.length;
 		for (var i = 0; i < arrayLength; i++) {
 			ghRouting.addPoint(new GHInput(pointlist[i][0], pointlist[i][1]));
 		}
 
-
-	    ghRouting.doRequest()
-	      .then(function(json) {
-		//console.log(json);
-		oldArr = json.paths[0].points.coordinates;
-		var res = [];
-		delta = 1;
-		for (i = 0; i < oldArr.length; i=i+delta) {
-		  res.push(globalToLocal([oldArr[i][1],oldArr[i][0]]));
-		}
-		//console.log(res);
-		fun(res);
-		if(ind != -1){
-		lastComputedInd = ind;
-		updateStraightLines(lastMouseX,lastMouseY);}
-	      })
-	      .catch(function(err) {
-		console.error(err.message);
-	      });
-}
-
+	    ghRouting.doRequest().then(function(json) {
+		    //console.log(json);
+		    oldArr = json.paths[0].points.coordinates;
+		    var res = [];
+		    delta = 1;
+		    for (i = 0; i < oldArr.length; i=i+delta) {
+		        res.push(globalToLocal([oldArr[i][1],oldArr[i][0]]));
+		    }
+		    fun(res);
+		    if (ind != -1) {
+		        lastComputedInd = ind;
+		        updateStraightLines(lastMouseX,lastMouseY);
+            }
+	    }).catch(function(err) {
+		    console.error(err.message);
+	    });
+    }
 }
 
 function drawRoute(pointlist) {
@@ -517,7 +533,13 @@ function activePassengers() {
       margin-top: 10px;
       padding-left: 20px;
       display: flex;
-      align-items: center; 
+      align-items: center;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
   }
 </style>
 </head>
