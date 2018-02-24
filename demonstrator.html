@@ -31,7 +31,7 @@ function getRouteData(pointlist){
 }
 
 function drawRoute(pointlist) {
-    // pointlist = [[0,0], [20,20], [30, 10]]; For testing purpouses
+    pointlist = [[0,0], [20,20], [30,10]]; // For testing purpouses
 
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
@@ -54,8 +54,8 @@ class Passenger {
 }
 
 function getPassengers() {
-    passengerList = [new Passenger((50,50), 4), 
-                     new Passenger((40,70), 3)];
+    passengerList = [new Passenger([50,50], 4), 
+                     new Passenger([40,70], 3)];
     return passengerList;
 }
 
@@ -63,10 +63,12 @@ function drawPassengers(passengerList) {
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
 
+    var radius = 5;
+
     passengerList.forEach(passenger => {
         ctx.beginPath();
-        var x, y = passenger.location;
-        ctx.arc(x, y, 20, 0, 2*Math.PI);
+        var [x, y] = passenger.location;
+        ctx.arc(x, y, radius, 0, 2*Math.PI);
         ctx.stroke();
     });
 }
