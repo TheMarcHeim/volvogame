@@ -102,6 +102,10 @@ function setup()
     icanvas.height = document.body.clientHeight; 
 
     finished = false;
+    lastInd = -1;
+    lastLoc = null;
+    lastType = 0;
+    lastComputedInd = -1;
 
     getDirectDist();
 
