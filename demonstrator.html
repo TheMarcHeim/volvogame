@@ -3,8 +3,8 @@
 <meta charset="utf-8"/>
 <script src="https://cdn.jsdelivr.net/npm/graphhopper-js-api-client/dist/graphhopper-client.js"></script>
 <script type="text/javascript">
-var scalex = 1000;
-var scaley = 1000;
+var scalex = 10;
+var scaley = 10;
 var mapCenter = [40.714728,-73.998672]
 var canvasW;
 var canvasH;
@@ -13,7 +13,7 @@ function onload(){
      setup();
      passengerList = getPassengers();
      drawPassengers(passengerList);
-     drawRoute();
+     //drawRoute();
 	testrouting();
 }
 
@@ -35,9 +35,9 @@ function setup()
 
 function testrouting(){
 	var points = [[40.705116,-74.008831],
-		[40.762191,-73.970143]];
+		[40.714728,-73.998672]];
 
-	getRouteData(points)
+	getRouteData(points, drawRoute)
 }
 
 function globalToLocal(p){
@@ -82,11 +82,12 @@ function getRouteData(pointlist, fun){
 
     ghRouting.doRequest()
       .then(function(json) {
+	console.log(json);
 	oldArr = json.paths[0].points.coordinates;
 	var res = [];
 	delta = 5;
 	for (i = 0; i < oldArr.length; i=i+delta) {
-	  res.push(globalToLocal(oldArr[i]));
+	  res.push(globalToLocal([oldArr[i][1],oldArr[i][0]]));
 	}
 	console.log(res);
 	fun(res);
@@ -98,7 +99,7 @@ function getRouteData(pointlist, fun){
 }
 
 function drawRoute(pointlist) {
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    //context.clearRect(0, 0, canvas.width, canvas.height);
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     ctx.moveTo(pointlist[0][0], pointlist[0][1]);
