@@ -34,7 +34,6 @@ function onload(){
 }
 
 
-
 $(document).ready(function(){
 
     $(".options").attr("data-option", "driver");
@@ -694,6 +693,7 @@ function passengerClickHandler() {
         $(".passengerStart").click(function(){
             $(this).remove();
             $(".passengerDestination").remove();
+            clearCanvases();
         });
 
         isStartSet = true;
@@ -719,6 +719,7 @@ function passengerClickHandler() {
         // So we need a handler for that
         $("passengerDestination").click(function(){
             $(this).remove();
+            clearCanvases();
             // TODO: Remove the path from start to destination
         });
         // Now that we have the start and the destination, the path connecting them
