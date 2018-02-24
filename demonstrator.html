@@ -36,13 +36,13 @@ $(document).ready(function(){
     $(".options").html("I want to be driven");
     $(".options").on("click", function() {
         if ($(this).attr("data-option") == "driver") {
-            clearCanvases();
-
+            //clearCanvases();
+            reset(0);
             $(this).attr("data-option", "passenger");
             $(this).html("I want to drive");
         } else {
             //clearCanvases();
-            reset(0);
+            reset(1);
             $(this).attr("data-option", "driver");
             $(this).html("I want to be driven");
         }
@@ -87,7 +87,7 @@ function setup()
     ctx.lineTo(200,100);
     ctx.stroke();
 	$("body").mousemove(onMouseMove);
-
+    //reset(0);
 }
 
 
@@ -106,13 +106,16 @@ function reset(driving){
 	    ctx.clearRect(0, 0, canvas.width, canvas.height);
 	    ctx.beginPath();
 	    var icanvas = document.getElementById("icanvas");
-	    var ictx = canvas.getContext("2d");
+	    var ictx = icanvas.getContext("2d");
 	    ictx.clearRect(0, 0, icanvas.width, icanvas.height);
 	    ictx.beginPath();
-	    $("body").removeClass("passenger");
-	    $("body").removeClass("start");
-	    $("body").removeClass("target");
-	    $("body").removeClass("passengertarget");
+	    $('.passenger').remove();
+	    $('.start').remove();
+	    $('.target').remove();
+	    $('.passengertarget').remove();
+	    //$("body").removeClass("start");
+	    //$("body").removeClass("target");
+	    //$("body").removeClass("passengertarget");
 	}	
 }
 
