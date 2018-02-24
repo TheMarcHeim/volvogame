@@ -9,6 +9,7 @@ var scaley = 11.5;
 var mapCenter = [40.714728,-73.998672]
 var canvasW;
 var canvasH;
+var passengerList;
 
 function onload(){
      setup();
@@ -127,6 +128,7 @@ function drawRoute(pointlist) {
 class Passenger {
     constructor(location, incentive) {
         this.location = location;
+        this.active = false;
         this.incentive = incentive;
     }
 }
@@ -146,10 +148,11 @@ function drawPassengers(passengerList) {
     var radius = 5;
 
     ctx.lineWidth = 1;
-    passengerList.forEach(passenger => {
+    passengerList.forEach((passenger, index) => {
         var [x, y] = passenger.location;
         passengerHTML = `<div class="passenger"
                               style="top: ` + y + `px; left: ` + x + `px;"
+                              index="` + index + `"
                               >
                          </div>`;
         body.innerHTML += passengerHTML;
@@ -157,14 +160,26 @@ function drawPassengers(passengerList) {
 
     $(".passenger").attr("data-selected", "green");
     $(".passenger").on("click", function(e) {
-        if ($(this).attr("data-selected") == "green") {
-            $(this).attr("data-selected", "yellow");
-            $(this).css("background-image", "url('passengerYellow.png')");
-        } else {
-            $(this).attr("data-selected", "green");
+        var index = $(this).attr("index");
+        if (passengerList[index].active == true) {
+            passengerList[index].active = false;
             $(this).css("background-image", "url('passengerGreen.png')");
+        } else {
+            passengerList[index].active = true;
+            $(this).css("background-image", "url('passengerYellow.png')");
+        }
+        console.log(activePassengers());
+    });
+}
+
+function activePassengers() {
+    var list = [];
+    passengerList.forEach(passenger => {
+        if (passenger.active) {
+            list.push(passenger);
         }
     });
+    return list;
 }
 
 /// Manage UI
