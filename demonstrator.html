@@ -48,7 +48,6 @@ function setup()
     ctx.moveTo(0,0);
     ctx.lineTo(200,100);
     ctx.stroke();
-
 	$("body").mousemove(function(e) {
 	    updateStraightLines(e.pageX,e.pageY);
 		lastMouseX=e.pageX;
@@ -123,7 +122,7 @@ function recomputeRoute(passengers){
 	tpassengers.sort(function(a, b) {
 	    return a.tcount - b.tcount;
 	});
-	console.log(tpassengers);
+	//console.log(tpassengers);
 	i = 0;
 	var points = [start];
 	//this is horrible
@@ -146,8 +145,12 @@ function recomputeRoute(passengers){
 		if(!passenger.done){
 			hasLeftInCar=1;}
 	    });
-	//if(	
-
+	if(hasLeftInCar){
+		$("#tFlag").css("background-image", "url('redflag.png')");
+	}else{
+		$("#tFlag").css("background-image", "url('greenflag.png')");
+	}
+	miles = getFreeMiles(passengers);
 	getRouteData(points, drawRoute);
 }
 
@@ -201,14 +204,14 @@ function getRouteData(pointlist, fun, ind){
 
 	    ghRouting.doRequest()
 	      .then(function(json) {
-		console.log(json);
+		//console.log(json);
 		oldArr = json.paths[0].points.coordinates;
 		var res = [];
 		delta = 1;
 		for (i = 0; i < oldArr.length; i=i+delta) {
 		  res.push(globalToLocal([oldArr[i][1],oldArr[i][0]]));
 		}
-		console.log(res);
+		//console.log(res);
 		fun(res);
 		if(ind != -1){
 		lastComputedInd = ind;
@@ -237,7 +240,6 @@ function drawRoute(pointlist) {
         ctx.moveTo(point[0], point[1]);
     });
     drawPassengerArrows();
-
 }
 
 /// Manage Passengers
@@ -254,14 +256,26 @@ class Passenger {
     }
 }
 
+
+
 function getPassengers() {
 //TODO: load CSV
     passengerList = [new Passenger(localToGlobal([550,50]), 4,localToGlobal([550,80])), 
                      new Passenger(localToGlobal([660,170]), 3,localToGlobal([500,80])),
 		     new Passenger(localToGlobal([750,100]), 4,localToGlobal([650,80])), 
                      new Passenger(localToGlobal([660,130]), 3,localToGlobal([450,100])),
-                     new Passenger(localToGlobal([1000,400]), 0,localToGlobal([350,80]))];
+                     new Passenger(localToGlobal([750,350]), 0,localToGlobal([450,280]))];
     return passengerList;
+}
+
+function getFreeMiles(passengers){
+	var miles = 0;
+	passengers.forEach(passenger => {
+		if(passenger.active && passenger.done){
+			miles += passenger.incentive;
+		}
+	    });
+	return miles;
 }
 
 function canvas_arrow(context, fromx, fromy, tox, toy){
@@ -322,6 +336,8 @@ function drawPassengers(passengerList) {
                          </div>`;
         body.innerHTML += passengertHTML;
 
+
+    });
 	//add start
         var [sx, sy] = globalToLocal(start);
         startHTML = `<div class="start"
@@ -332,12 +348,11 @@ function drawPassengers(passengerList) {
 
 	//add targer
         var [ttx, tty] = globalToLocal(target);
-        targetHTML = `<div class="target" id="targetFlag"
+        targetHTML = `<div class="target" id="tFlag"
                               style="top: ` + tty + `px; left: ` + ttx + `px;"
                               >
                          </div>`;
         body.innerHTML += targetHTML;
-    });
 
     $(".passenger").on("click", function(e) {
         var index = $(this).attr("index");
@@ -359,7 +374,7 @@ function drawPassengers(passengerList) {
 	    $(this).attr("count",count);
             $(this).css("background-image", "url('passengerYellow.png')");
         }
-        console.log(activePassengers());
+        //console.log(activePassengers());
 	recomputeRoute(activePassengers());
     });
 
@@ -451,7 +466,7 @@ function passengerClick() {
       position: absolute;
       width: 20px;
       height: 20px;
-      background-image: url('redflag.png');
+      background-image: url('greenflag.png');
       background-size: cover;
       z-index: 1;
   }
@@ -486,12 +501,12 @@ function passengerClick() {
       margin-top: 10px;
       padding-left: 20px;
       display: flex;
-      align-items: center;
+      align-items: center; 
   }
 </style>
 </head>
 <body id="body" onload="onload()">
-    <img id="map" src="http://staticmap.openstreetmap.de/staticmap.php?center=40.714728,-73.998672&zoom=14&size=1920x700&maptype=mapnik" class="coveredImage">
+    <img id="map" src="http://staticmap.openstreetmap.de/staticmap.php?center=40.714728,-73.998672&zoom=14&size=1920x700&maptype=positron" class="coveredImage">
     <canvas id="canvas" class="coveringCanvas">
     </canvas>
     <canvas id="icanvas" class="coveringCanvas"></canvas>
