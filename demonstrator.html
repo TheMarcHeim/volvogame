@@ -15,7 +15,8 @@ function setup()
 {
     map = document.getElementById("map");
     canvas = document.getElementById("canvas");
-
+    canvas.width = document.body.clientWidth;
+    canvas.height = document.body.clientHeight; 
 
 
     var ctx = canvas.getContext("2d");
@@ -84,8 +85,9 @@ class Passenger {
 }
 
 function getPassengers() {
-    passengerList = [new Passenger([150,50], 4), 
-                     new Passenger([140,70], 3)];
+    passengerList = [new Passenger([550,50], 4), 
+                     new Passenger([660,170], 3),
+                     new Passenger([1000,400], 0)];
     return passengerList;
 }
 
@@ -107,6 +109,12 @@ function drawPassengers(passengerList) {
     });
 }
 
+/// Manage UI
+
+function mouseHandler() {
+    
+}
+
 </script>
 
 
@@ -115,17 +123,7 @@ function drawPassengers(passengerList) {
   body {
       background-color: ivory;
   }
-  .outsideWrapper {
-      width:125px;
-      height:125px;
-      margin:20px 60px;
-      border:1px solid blue;
-  }
-  .insideWrapper {
-      width:100%;
-      height:100%;
-      position:relative;
-  }
+
   .coveredImage {
       width:100%;
       height:100%;
@@ -144,7 +142,7 @@ function drawPassengers(passengerList) {
 </style>
 </head>
 <body onload="onload()">
-    <img id="map" src="http://staticmap.openstreetmap.de/staticmap.php?center=40.714728,-73.998672&zoom=14&size=865x512&maptype=mapnik" class="coveredImage">
-    <canvas id="canvas" class="coveringCanvas"></canvas>
+    <img id="map" src="http://staticmap.openstreetmap.de/staticmap.php?center=40.714728,-73.998672&zoom=14&size=1920x700&maptype=mapnik" class="coveredImage">
+    <canvas id="canvas" class="coveringCanvas" onclick="mouseHandler()"></canvas>
 </body>
 </html>
