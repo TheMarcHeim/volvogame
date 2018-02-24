@@ -3,6 +3,7 @@
 <meta charset="utf-8"/>
 <script src="https://cdn.jsdelivr.net/npm/graphhopper-js-api-client/dist/graphhopper-client.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
 <script type="text/javascript">
 var scalex = 21;
 var scaley = 11.5;
@@ -404,6 +405,9 @@ function passengerClick() {
 <style>
   body {
       background-color: ivory;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: bold;
+      font-size: 20px;
   }
 
   .coveredImage {
@@ -462,18 +466,27 @@ function passengerClick() {
       box-shadow: 5px 5px 5px grey;
   }
   .incentiveDisplay {
-      width: 300px;
+      width: 280px;
       height: 60px;
       background-color: white;
       border: 1px solid grey;
       border-radius: 5px;
+      margin-top: 10px;
+      padding-left: 20px;
+      display: flex;
+      align-items: center;
   }
   .options {
-      width: 300px;
+      width: 280px;
       height: 60px;
-      background-color: white;
+      background-color: rgb(108, 108, 224);
       border: 1px solid grey;
+      color: white;
       z-index: 10;
+      margin-top: 10px;
+      padding-left: 20px;
+      display: flex;
+      align-items: center;
   }
 </style>
 </head>
@@ -483,10 +496,10 @@ function passengerClick() {
     </canvas>
     <canvas id="icanvas" class="coveringCanvas"></canvas>
     <div class="incentiveDisplay">
-
+        Miles gained: 5
     </div>
     <div class="options">
-
+        I want to be driven
     </div>
 </body>
 </html>
