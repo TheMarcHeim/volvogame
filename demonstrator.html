@@ -281,6 +281,11 @@ function getFreeMiles(passengers){
 }
 
 function canvas_arrow(context, fromx, fromy, tox, toy){
+    s=5;
+    fromx+=s;
+    fromy+=s;
+    tox+=s;
+    toy+=s;
     var headlen = 10;   // length of head in pixels
     var angle = Math.atan2(toy-fromy,tox-fromx);
     context.moveTo(fromx, fromy);
@@ -294,9 +299,9 @@ function drawPassengerArrows(){
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
 ctx.beginPath();
-	ctx.lineWidth=5;
+	ctx.lineWidth=10;
 	ctx.lineCap="round";
-	ctx.strokeStyle = 'rgba(255,0,0,0.5)';
+	ctx.strokeStyle = 'rgba(255,0,0,0.3)';
 
    passengerList.forEach(passenger => {
 	st = globalToLocal(passenger.location);
