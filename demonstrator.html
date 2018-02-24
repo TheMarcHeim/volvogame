@@ -8,7 +8,7 @@
 var scalex = 21;
 var scaley = 11.5;
 var mapCenter = [40.714728,-73.998672]
-
+var mode = 1;
 var passengerList;
 var count = 0;
 var lastInd = -1;
@@ -157,7 +157,8 @@ function drawPath(from, to){
 
 
 function onMouseMove(e) {
-	updateStraightLines(e.pageX,e.pageY);
+    if(mode){
+	updateStraightLines(e.pageX,e.pageY);}
 	lastMouseX=e.pageX;
 	lastMouseY=e.pageY;
 }
@@ -186,8 +187,11 @@ function setup()
 
 
 function reset(driving) {
+    mode = driving;
 	if (driving) {
         clearCanvases();
+        $('.quest').remove();
+        $('.passengertarget').remove();
 	    setup();
 	    passengerList = getPassengers();
 	    drawPassengers(passengerList);
@@ -703,13 +707,14 @@ function passengerClickHandler() {
         var destinationYLocal = lastMouseY;
         [destinationXGlobal, destinationYGlobal] = localToGlobal([destinationXLocal, destinationYLocal]);
         // This div is drawn at its local coordinates and has its global coordinates saved
-        body.innerHTML += `<div class="target passengerDestination" 
+        var elem = $(`<div class="target passengerDestination" 
                                 style="top:  ` + destinationYLocal + `px;
                                        left: ` + destinationXLocal + `px;
                                        z-index: 10" 
                                 data-X="` + destinationXGlobal + `" 
                                 data-Y="` + destinationYGlobal + `">
-                           </div>`;
+                           </div>`);
+        $("body").append(elem);
         // Clicking on the destination should remove it
         // So we need a handler for that
         $("passengerDestination").click(function(){
@@ -721,7 +726,6 @@ function passengerClickHandler() {
         var startX = $(".passengerStart").attr("data-X");
         var startY = $(".passengerStart").attr("data-Y");
 
-        console.log("I AM TRYING TO DRAW A PATH");
         drawPath([startX, startY], [destinationXGlobal, destinationYGlobal]);
     } 
 }
