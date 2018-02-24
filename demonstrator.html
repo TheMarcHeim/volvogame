@@ -77,12 +77,12 @@ function getDirectDist() {
 
 function clearCanvases() {
     var canvas = document.getElementById("canvas");
-    canvas.innerHTML = "";
+    $(canvas).html('');
 	var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();
     var icanvas = document.getElementById("icanvas");
-    icanvas.innerHTML = "";
+    $(icanvas).html('');
     ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();
@@ -522,12 +522,12 @@ function drawQuests(questList){
     questList.forEach((quest,index)=>{
         var [x, y] = globalToLocal(quest.location);
 
-        var questHTML = `<div class="quest"
+        var questHTML = $(`<div class="quest"
                               style="top: ` + y + `px; left: ` + x + `px;"
                               index="` + index + `"count="0"
                               >
-                         </div>`;
-        body.innerHTML += questHTML;
+                         </div>`);
+        $('body').append(questHTML);
         cacheQuestPath(quest);
     });
 
@@ -581,38 +581,38 @@ function drawPassengers(passengerList) {
     ctx.lineWidth = 1;
     passengerList.forEach((passenger, index) => {
         var [x, y] = globalToLocal(passenger.location);
-        passengerHTML = `<div class="passenger"
+        var passengerHTML = $(`<div class="passenger"
                               style="top: ` + y + `px; left: ` + x + `px;"
                               index="` + index + `"count="0"
                               >
-                         </div>`;
-        body.innerHTML += passengerHTML;
+                              </div>`);
+        $('body').append(passengerHTML);
 
         var [tx, ty] = globalToLocal(passenger.targetlocation);
-        passengertHTML = `<div id = "target`+ index +`" class="passengertarget"
+        var passengertHTML = $(`<div id = "target`+ index +`" class="passengertarget"
                               style="top: ` + ty + `px; left: ` + tx + `px;"
                               index="` + index + `"count="0"
                               >
-                         </div>`;
-        body.innerHTML += passengertHTML;
+                         </div>`);
+        $('body').append(passengertHTML);
 
 
     });
 	//add start
     var [sx, sy] = globalToLocal(start);
-    startHTML = `<div class="start"
+    var startHTML = $(`<div class="start"
                           style="top: ` + sy + `px; left: ` + sx + `px;"
                           >
-                     </div>`;
-    body.innerHTML += startHTML;
+                     </div>`);
+    $('body').append(startHTML);
 
 	//add target
     var [ttx, tty] = globalToLocal(target);
-    targetHTML = `<div class="target" id="tFlag"
+    var targetHTML = $(`<div class="target" id="tFlag"
                           style="top: ` + tty + `px; left: ` + ttx + `px;"
                           >
-                     </div>`;
-    body.innerHTML += targetHTML;
+                     </div>`);
+    $('body').append(targetHTML);
 
     $(".passenger").on("click", function(e) {
         if (!finished) {
@@ -681,16 +681,17 @@ function passengerClickHandler() {
         var startYLocal = lastMouseY;
         [startXGlobal, startYGlobal] = localToGlobal([startXLocal, startYLocal]);
         // This div is drawn at its local coordinates and has its global coordinates saved
-        body.innerHTML += `<div class="start passengerStart" 
+        var startElem = $(`<div class="start passengerStart" 
                                 style="top:  ` + startYLocal + `px;
                                        left: ` + startXLocal + `px;
                                        z-index: 10" 
                                 data-X="` + startXGlobal + `" 
                                 data-Y="` + startYGlobal + `">
-                           </div>`;
+                           </div>`);
+        $('body').append(startElem);
         // Clicking on the start should remove it
         // So we need a handler for that
-        $(".passengerStart").click(function(){
+        startElem.on('click', function(){
             $(this).remove();
             $(".passengerDestination").remove();
             clearCanvases();
@@ -717,7 +718,7 @@ function passengerClickHandler() {
         $("body").append(elem);
         // Clicking on the destination should remove it
         // So we need a handler for that
-        $("passengerDestination").click(function(){
+        elem.click(function(){
             $(this).remove();
             clearCanvases();
             // TODO: Remove the path from start to destination
@@ -835,6 +836,7 @@ function activePassengers() {
       padding-left: 20px;
       display: flex;
       align-items: center;
+      z-index: 10;
   }
   .options {
       position: absolute;
