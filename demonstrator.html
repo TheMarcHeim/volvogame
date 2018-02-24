@@ -20,6 +20,7 @@ var lastMouseX = 0;
 var lastMouseY = 0;
 var canFinish = 1;
 var finished = 0;
+var directDist = 0;
 var start = [40.705086,-74.016711];
 var target = [40.734967,-73.992850];
 
@@ -48,6 +49,25 @@ $(document).ready(function(){
         }
     });
 });
+
+function getDirectDist() {
+    var ghRouting = new GraphHopper.Routing({
+	      key: "792f5935-6974-4c19-9ada-2742bbcdc54f",
+	      vehicle: "car",
+	      elevation: false
+	    });
+
+	    ghRouting.addPoint(new GHInput(start[0], start[1]));
+	    ghRouting.addPoint(new GHInput(target[0], target[1]));
+
+	    ghRouting.doRequest().then(function(json) {
+		    //console.log(json);
+            console.log(json);
+            directDist = json.paths[0].distance;
+	    }).catch(function(err) {
+		    console.error(err.message);
+	    });
+}
 
 function clearCanvases() {
     var canvas = document.getElementById("canvas");
@@ -81,6 +101,8 @@ function setup()
 
     canvasW = canvas.width;
     canvasH = canvas.height;
+
+    getDirectDist();
 
     var ctx = canvas.getContext("2d");
     ctx.moveTo(0,0);
