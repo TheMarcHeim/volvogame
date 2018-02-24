@@ -14,7 +14,8 @@ function setup()
 {
     map = document.getElementById("map");
     canvas = document.getElementById("canvas");
-
+    canvas.width = document.body.clientWidth;
+    canvas.height = document.body.clientHeight; 
 
 
     var ctx = canvas.getContext("2d");
@@ -78,8 +79,8 @@ class Passenger {
 }
 
 function getPassengers() {
-    passengerList = [new Passenger([150,50], 4), 
-                     new Passenger([140,70], 3)];
+    passengerList = [new Passenger([550,50], 4), 
+                     new Passenger([660,170], 3)];
     return passengerList;
 }
 
