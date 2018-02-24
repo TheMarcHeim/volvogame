@@ -129,28 +129,32 @@ function drawPath(from, to){
 	    ghRouting.addPoint(new GHInput(to[0], to[1]));
 
 	    ghRouting.doRequest().then(function(json) {
-		    //console.log(json);
             console.log(json);
-	    var canvas = document.getElementById("canvas");
-	    var ctx = canvas.getContext("2d");
-		ctx.lineWidth=10;
-		ctx.lineCap="round";
-		ctx.strokeStyle = 'rgba(165,177,248,0.5)';
-	    ctx.clearRect(0, 0, canvas.width, canvas.height);
-	    ctx.beginPath();
-        var pointlist = json.paths[0].points.coordinates;
-	    ctx.moveTo(pointlist[0][0], pointlist[0][1]);
-
-	    pointlist.forEach(point => {
-		ctx.lineTo(point[0], point[1]);
-		ctx.stroke();
-		ctx.moveTo(point[0], point[1]);
-	    });
+            var canvas = document.getElementById("canvas");
+            var ctx = canvas.getContext("2d");
+            ctx.lineWidth=10;
+            ctx.lineCap="round";
+            ctx.strokeStyle = 'rgba(65,77,48,0.5)';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            pointlist = json.paths[0].points.coordinates;
+            cpoint = pointlist[0];
+            point = globalToLocal([cpoint[1],cpoint[0]])
+            ctx.moveTo(point[0], point[1]);
+     
+            pointlist.forEach(cpoint => {
+            point = globalToLocal([cpoint[1],cpoint[0]]);
+                ctx.lineTo(point[0], point[1]);
+                ctx.stroke();
+                ctx.moveTo(point[0], point[1]);
+            });
 	
 	    }).catch(function(err) {
 		    console.error(err.message);
 	    });
 }
+
+
 
 function onMouseMove(e) {
 	updateStraightLines(e.pageX,e.pageY);
@@ -175,12 +179,6 @@ function setup()
     lastType = 0;
     lastComputedInd = -1;
 
-    getDirectDist();
-
-    var ctx = canvas.getContext("2d");
-    ctx.moveTo(0,0);
-    ctx.lineTo(200,100);
-    ctx.stroke();
 	$("body").mousemove(onMouseMove);
     //reset(0);
 }
@@ -669,6 +667,71 @@ function drawPassengers(passengerList) {
     });
 }
 
+function passengerClickHandler() {
+    // First, check if we already have a start
+    // If not, set the start
+    // If yes, set the destination
+    var isStartSet = $(".passengerStart").length != 0;
+    var isDestinationSet = $(".passengerDestination").length != 0;
+    if (!isStartSet) {
+        var startXLocal = lastMouseX;
+        var startYLocal = lastMouseY;
+        [startXGlobal, startYGlobal] = localToGlobal([startXLocal, startYLocal]);
+        // This div is drawn at its local coordinates and has its global coordinates saved
+        body.innerHTML += `<div class="start passengerStart" 
+                                style="top:  ` + startYLocal + `px;
+                                       left: ` + startXLocal + `px;
+                                       z-index: 10" 
+                                data-X="` + startXGlobal + `" 
+                                data-Y="` + startYGlobal + `">
+                           </div>`;
+        // Clicking on the start should remove it
+        // So we need a handler for that
+        $(".passengerStart").click(function(){
+            $(this).remove();
+            $(".passengerDestination").remove();
+        });
+
+        isStartSet = true;
+
+    } else {
+        // If a destination has already been set, we need to remove it before we add a new one
+        if (isDestinationSet) $(".passengerDestination").remove();
+
+        // Now we create the new destination
+        var destinationXLocal = lastMouseX;
+        var destinationYLocal = lastMouseY;
+        [destinationXGlobal, destinationYGlobal] = localToGlobal([destinationXLocal, destinationYLocal]);
+        // This div is drawn at its local coordinates and has its global coordinates saved
+        body.innerHTML += `<div class="target passengerDestination" 
+                                style="top:  ` + destinationYLocal + `px;
+                                       left: ` + destinationXLocal + `px;
+                                       z-index: 10" 
+                                data-X="` + destinationXGlobal + `" 
+                                data-Y="` + destinationYGlobal + `">
+                           </div>`;
+        // Clicking on the destination should remove it
+        // So we need a handler for that
+        $("passengerDestination").click(function(){
+            $(this).remove();
+            // TODO: Remove the path from start to destination
+        });
+        // Now that we have the start and the destination, the path connecting them
+        // can be drawn. Note that the start coordinates have to be extracted from the div
+        var startX = $(".passengerStart").attr("data-X");
+        var startY = $(".passengerStart").attr("data-Y");
+
+        console.log("I AM TRYING TO DRAW A PATH");
+        drawPath([startX, startY], [destinationXGlobal, destinationYGlobal]);
+    } 
+}
+
+function icanvasClickHandler() {
+    if ($(".options").attr("data-option") == "passenger") {
+        passengerClickHandler();
+    }
+}
+
 
 function activePassengers() {
     var list = [];
@@ -793,7 +856,7 @@ function activePassengers() {
     <img id="map" src="http://staticmap.openstreetmap.de/staticmap.php?center=40.714728,-73.998672&zoom=14&size=1920x700&maptype=positron" class="coveredImage">
     <canvas id="canvas" class="coveringCanvas">
     </canvas>
-    <canvas id="icanvas" class="coveringCanvas">
+    <canvas id="icanvas" class="coveringCanvas" onclick="icanvasClickHandler()">
     </canvas>
     <div class="incentiveDisplay">
         Miles gained: 0
