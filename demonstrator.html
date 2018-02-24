@@ -2,6 +2,7 @@
 <head>
 <meta charset="utf-8"/>
 <script src="https://cdn.jsdelivr.net/npm/graphhopper-js-api-client/dist/graphhopper-client.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
 var scalex = 10;
 var scaley = 10;
@@ -137,15 +138,23 @@ function drawPassengers(passengerList) {
     ctx.lineWidth = 1;
     passengerList.forEach(passenger => {
         var [x, y] = passenger.location;
-        passengerHTML = `<div class="passenger" style="top: ` + y + `px; left: ` + x + `px;">
+        passengerHTML = `<div class="passenger"
+                              style="top: ` + y + `px; left: ` + x + `px;"
+                              >
                          </div>`;
         body.innerHTML += passengerHTML;
+    });
+
+    $(".passenger").on("click", function(e) {
+        $(this).css("background-image", "url('passengerRed.png')");
     });
 }
 
 /// Manage UI
 
-function mouseHandler() {
+
+
+function passengerClick() {
     
 }
 
@@ -181,6 +190,8 @@ function mouseHandler() {
       background-image: url('passengerGreen.png');
       background-size: cover;
       z-index: 1;
+      border-radius: 10px;
+      box-shadow: 5px 5px 5px grey;
   }
 </style>
 </head>
