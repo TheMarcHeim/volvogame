@@ -7,6 +7,7 @@ function onload(){
      passengerList = getPassengers();
      drawPassengers(passengerList);
      drawRoute();
+	testrouting();
 }
 
 function setup()
@@ -23,8 +24,10 @@ function setup()
 }
 
 function testrouting(){
-	points = [(8.34234,48.23424),(8.34423,48.26424)]
-	getRouteData(pointlist)
+	var points = [[8.34234,48.23424],
+		[8.34423,48.26424]];
+
+	getRouteData(points)
 }
 
 function getRouteData(pointlist){
@@ -33,10 +36,12 @@ function getRouteData(pointlist){
       vehicle: "car",
       elevation: false
     });
-	
-	for (var p in pointlist){
-		ghRouting.addPoint(new GHInput(p[0], p[1]));
+	alert(pointlist[0]);
+	var arrayLength = pointlist.length;
+	for (var i = 0; i < arrayLength; i++) {
+		ghRouting.addPoint(new GHInput(pointlist[i][0], pointlist[i][1]));
 	}
+
 
     ghRouting.doRequest()
       .then(function(json) {
