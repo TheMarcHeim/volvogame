@@ -8,13 +8,12 @@
 var scalex = 21;
 var scaley = 11.5;
 var mapCenter = [40.714728,-73.998672]
-var canvasW;
-var canvasH;
+
 var passengerList;
 var count = 0;
 var lastInd = -1;
 var lastLoc = null;
-var lastType = 0
+var lastType = 0;
 var lastComputedInd = -1;
 var lastMouseX = 0;
 var lastMouseY = 0;
@@ -102,8 +101,6 @@ function setup()
     icanvas.width = document.body.clientWidth;
     icanvas.height = document.body.clientHeight; 
 
-    canvasW = canvas.width;
-    canvasH = canvas.height;
     finished = false;
 
     getDirectDist();
@@ -120,19 +117,13 @@ function setup()
 
 function reset(driving) {
 	if (driving) {
+        clearCanvases();
 	    setup();
 	    passengerList = getPassengers();
 	    drawPassengers(passengerList);
 	    drawPassengerArrows();
 	} else {
-	    var canvas = document.getElementById("canvas");
-	    var ctx = canvas.getContext("2d");
-	    ctx.clearRect(0, 0, canvas.width, canvas.height);
-	    ctx.beginPath();
-	    var icanvas = document.getElementById("icanvas");
-	    var ictx = icanvas.getContext("2d");
-	    ictx.clearRect(0, 0, icanvas.width, icanvas.height);
-	    ictx.beginPath();
+	    clearCanvases();
 	    $('.passenger').remove();
 	    $('.start').remove();
 	    $('.target').remove();
@@ -154,119 +145,117 @@ function reset(driving) {
     });
 }
 
-function updateStraightLines(x,y){
-	if(!finished){
+function updateStraightLines(x,y) {
+	if (!finished) {
 	    var canvas = document.getElementById("icanvas");
 	    var ctx = canvas.getContext("2d");
 
-	ctx.lineWidth=10;
-	ctx.lineCap="round";
-	ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+	    ctx.lineWidth=10;
+	    ctx.lineCap="round";
+	    ctx.strokeStyle = 'rgba(0,0,0,0.5)';
 	    ctx.clearRect(0, 0, canvas.width, canvas.height);
 	    ctx.beginPath();
 
-	if(lastInd!=lastComputedInd && lastComputedInd!=-1){
-		//if(lastComputedInd=-1){
-	    	//	ctx.moveTo(start[0],start[1]);
-		//}else{ctx.moveTo(passengers[0],start[1]);}
-	}
-	if(lastInd!=-1){
-		st = lastLoc;
-		ta = globalToLocal(target);
-		ctx.moveTo(st[0],st[1]);
-		ctx.lineTo(x, y);
-		ctx.setLineDash([5, 15]);
-		ctx.lineTo(ta[0],ta[1]);
-		ctx.stroke();
-	}else{st = globalToLocal(start);
-		ta = globalToLocal(target);
-		ctx.moveTo(st[0],st[1]);
-		ctx.lineTo(x, y);
-		ctx.setLineDash([5, 15]);
-		ctx.lineTo(ta[0],ta[1]);
-		ctx.stroke();}
+	    if (lastInd!=-1) {
+            st = lastLoc;
+            ta = globalToLocal(target);
+            ctx.moveTo(st[0],st[1]);
+            ctx.lineTo(x, y);
+            ctx.setLineDash([5, 15]);
+            ctx.lineTo(ta[0],ta[1]);
+            ctx.stroke();
+	    } else {
+            st = globalToLocal(start);
+            ta = globalToLocal(target);
+            ctx.moveTo(st[0],st[1]);
+            ctx.lineTo(x, y);
+            ctx.setLineDash([5, 15]);
+            ctx.lineTo(ta[0],ta[1]);
+            ctx.stroke();
+        }
 	}
 }
 
 function testrouting(){
-	var points = [start,
-		target];
-	getRouteData(points, drawRoute)
+	var points = [start, target];
+	getRouteData(points, drawRoute);
 }
 
-function testpoint(p){
-	var points = [start,
-		localToGlobal(p)];
-	getRouteData(points, drawRoute)
+function testpoint(p) {
+	var points = [start, localToGlobal(p)];
+	getRouteData(points, drawRoute);
 }
 
-function recomputeRoute(passengers){
+function recomputeRoute(passengers) {
 
 	//sort for count
 
 	passengers.sort(function(a, b) {
 	    return a.count - b.count;
 	});
-	if(passengers.length>0){
-	lastInd = passengers[passengers.length-1].index;
-	if(lastType){
-	lastLoc = globalToLocal(passengers[passengers.length-1].targetlocation);}
-	else{
-	lastLoc = globalToLocal(passengers[passengers.length-1].location);}}
+	if (passengers.length > 0) {
+	    lastInd = passengers[passengers.length-1].index;
+        if (lastType) {
+            lastLoc = globalToLocal(passengers[passengers.length-1].targetlocation);
+        } else {
+            lastLoc = globalToLocal(passengers[passengers.length-1].location);
+        }
+    }
 	var points = [start];
-	    passengers.forEach(passenger => {
+	passengers.forEach(passenger => {
 		points.push(passenger.location);
-	    });
-	//points.push(target);
+	});
 
 	tpassengers = [].concat(passengers);
 	tpassengers.sort(function(a, b) {
 	    return a.tcount - b.tcount;
 	});
-	//console.log(tpassengers);
-	i = 0;
+
+	var i = 0;
 	var points = [start];
 	//this is horrible
 	    passengers.forEach(passenger => {
-		while(i<tpassengers.length && tpassengers[i].tcount<passenger.count){
-			if(tpassengers[i].done){
-				points.push(tpassengers[i].targetlocation);}
-			i++;
-		}
-		points.push(passenger.location);
+            while(i < tpassengers.length && tpassengers[i].tcount < passenger.count) {
+                if(tpassengers[i].done){
+                    points.push(tpassengers[i].targetlocation);}
+                i++;
+		    }
+		    points.push(passenger.location);
 	    });
-	while(i<tpassengers.length){
-		if(tpassengers[i].done){
-			points.push(tpassengers[i].targetlocation);}
-		i++;
-	}
-	if(finished){
+
+	    while (i<tpassengers.length) {
+		    if (tpassengers[i].done) {
+			    points.push(tpassengers[i].targetlocation);}
+		    i++;
+	    }
+	if (finished) {
 		points.push(target);
 	}
 	//check if all passengers are delivered
-	hasLeftInCar = 0;
+	var hasLeftInCar = 0;
 	passengers.forEach(passenger => {
-		if(!passenger.done){
-			hasLeftInCar=1;}
-	    });
-	if(hasLeftInCar){
-                canFinish = 0;
+		if (!passenger.done) {
+			hasLeftInCar=1;
+        }
+	});
+	if (hasLeftInCar) {
+        canFinish = 0;
 		$("#tFlag").css("background-image", "url('redflag.png')");
-	}else{
-                canFinish = 1;
+	} else {
+        canFinish = 1;
 		$("#tFlag").css("background-image", "url('greenflag.png')");
 	}
-	if(finished){
+	if (finished) {
 		$("#tFlag").css("background-image", "url('checkflag.png')");
 	}
 	var miles = getFreeMiles(passengers);
     
 	
-	$(".incentiveDisplay").text("Miles gained: "+miles);
+	$(".incentiveDisplay").text("Miles gained: " + miles);
 	getRouteData(points, drawRoute);
 }
 
-function globalToLocal(p){
+function globalToLocal(p) {
 	px = p[0];
 	py = p[1];
 	px -= mapCenter[0];
@@ -275,16 +264,16 @@ function globalToLocal(p){
 	py *= scaley;
 	px += 1/2;
 	py += 1/2;
-	px *= canvasH;
-	py *= canvasW;
+	px *= canvas.height;
+	py *= canvas.width;
 	return [py,px];
 }
 
-function localToGlobal(p){
+function localToGlobal(p) {
 	px = p[0];
 	py = p[1];
-	px /= canvasW;
-	py /= canvasH;
+	px /= canvas.width;
+	py /= canvas.height;
 	px -= 1/2;
 	py -= 1/2;
 	px /= scaley;
