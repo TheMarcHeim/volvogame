@@ -8,13 +8,12 @@
 var scalex = 21;
 var scaley = 11.5;
 var mapCenter = [40.714728,-73.998672]
-var canvasW;
-var canvasH;
+
 var passengerList;
 var count = 0;
 var lastInd = -1;
 var lastLoc = null;
-var lastType = 0
+var lastType = 0;
 var lastComputedInd = -1;
 var lastMouseX = 0;
 var lastMouseY = 0;
@@ -102,8 +101,6 @@ function setup()
     icanvas.width = document.body.clientWidth;
     icanvas.height = document.body.clientHeight; 
 
-    canvasW = canvas.width;
-    canvasH = canvas.height;
     finished = false;
 
     getDirectDist();
@@ -180,14 +177,13 @@ function updateStraightLines(x,y) {
 }
 
 function testrouting(){
-	var points = [start,
-		target];
-	getRouteData(points, drawRoute)
+	var points = [start, target];
+	getRouteData(points, drawRoute);
 }
 
 function testpoint(p) {
 	var points = [start, localToGlobal(p)];
-	getRouteData(points, drawRoute)
+	getRouteData(points, drawRoute);
 }
 
 function recomputeRoute(passengers) {
@@ -197,7 +193,7 @@ function recomputeRoute(passengers) {
 	passengers.sort(function(a, b) {
 	    return a.count - b.count;
 	});
-	if (passengers.length>0) {
+	if (passengers.length > 0) {
 	    lastInd = passengers[passengers.length-1].index;
         if (lastType) {
             lastLoc = globalToLocal(passengers[passengers.length-1].targetlocation);
@@ -268,16 +264,16 @@ function globalToLocal(p) {
 	py *= scaley;
 	px += 1/2;
 	py += 1/2;
-	px *= canvasH;
-	py *= canvasW;
+	px *= canvas.height;
+	py *= canvas.width;
 	return [py,px];
 }
 
 function localToGlobal(p) {
 	px = p[0];
 	py = p[1];
-	px /= canvasW;
-	py /= canvasH;
+	px /= canvas.width;
+	py /= canvas.height;
 	px -= 1/2;
 	py -= 1/2;
 	px /= scaley;
