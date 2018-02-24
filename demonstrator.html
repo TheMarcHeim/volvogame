@@ -25,6 +25,10 @@ function setup()
     canvas.width = document.body.clientWidth;
     canvas.height = document.body.clientHeight; 
 
+    icanvas = document.getElementById("icanvas");
+    icanvas.width = document.body.clientWidth;
+    icanvas.height = document.body.clientHeight; 
+
     canvasW = canvas.width;
     canvasH = canvas.height;
 
@@ -47,7 +51,7 @@ function testrouting(){
 
 function testpoint(p){
 	var points = [[40.705086,-74.016711],
-		p];
+		localToGlobal(p)];
 	getRouteData(points, drawRoute)
 }
 
@@ -223,6 +227,7 @@ function passengerClick() {
     <img id="map" src="http://staticmap.openstreetmap.de/staticmap.php?center=40.714728,-73.998672&zoom=14&size=1920x700&maptype=mapnik" class="coveredImage">
     <canvas id="canvas" class="coveringCanvas">
     </canvas>
+    <canvas id="icanvas" class="coveringCanvas">
     <div class="incentiveDisplay">
 
     </div>
