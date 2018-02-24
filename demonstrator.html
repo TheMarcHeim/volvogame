@@ -46,14 +46,14 @@ function getRouteData(pointlist){
 
     ghRouting.doRequest()
       .then(function(json) {
-        console.log(json);
 	oldArr = json.paths[0].points.coordinates;
 	var res = [];
-	delta = 10;
+	delta = 5;
 	for (i = 0; i < oldArr.length; i=i+delta) {
 	  res.push(oldArr[i]);
 	}
 	console.log(res);
+	//fun(res);
       })
       .catch(function(err) {
         console.error(err.message);
