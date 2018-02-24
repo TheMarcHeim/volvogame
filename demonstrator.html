@@ -45,6 +45,12 @@ function testrouting(){
 	getRouteData(points, drawRoute)
 }
 
+function testpoint(p){
+	var points = [[40.705086,-74.016711],
+		p];
+	getRouteData(points, drawRoute)
+}
+
 function globalToLocal(p){
 	px = p[0];
 	py = p[1];
@@ -104,9 +110,9 @@ function getRouteData(pointlist, fun){
 }
 
 function drawRoute(pointlist) {
-    //context.clearRect(0, 0, canvas.width, canvas.height);
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.moveTo(pointlist[0][0], pointlist[0][1]);
 
     pointlist.forEach(point => {
