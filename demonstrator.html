@@ -85,6 +85,40 @@ function clearCanvases() {
     ctx.beginPath();
 }
 
+function drawPath(from, to){
+
+    var ghRouting = new GraphHopper.Routing({
+	      key: "792f5935-6974-4c19-9ada-2742bbcdc54f",
+	      vehicle: "car",
+	      elevation: false
+	    });
+
+	    ghRouting.addPoint(new GHInput(from[0], from[1]));
+	    ghRouting.addPoint(new GHInput(to[0], to[1]));
+
+	    ghRouting.doRequest().then(function(json) {
+		    //console.log(json);
+            console.log(json);
+	    var canvas = document.getElementById("canvas");
+	    var ctx = canvas.getContext("2d");
+		ctx.lineWidth=10;
+		ctx.lineCap="round";
+		ctx.strokeStyle = 'rgba(165,177,248,0.5)';
+	    ctx.clearRect(0, 0, canvas.width, canvas.height);
+	    ctx.beginPath();
+	    ctx.moveTo(pointlist[0][0], pointlist[0][1]);
+
+	    pointlist.forEach(point => {
+		ctx.lineTo(point[0], point[1]);
+		ctx.stroke();
+		ctx.moveTo(point[0], point[1]);
+	    });
+	
+	    }).catch(function(err) {
+		    console.error(err.message);
+	    });
+}
+
 function onMouseMove(e) {
 	updateStraightLines(e.pageX,e.pageY);
 	lastMouseX=e.pageX;
