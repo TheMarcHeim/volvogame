@@ -523,12 +523,12 @@ function drawQuests(questList){
     questList.forEach((quest,index)=>{
         var [x, y] = globalToLocal(quest.location);
 
-        var questHTML = `<div class="quest"
+        var questHTML = $(`<div class="quest"
                               style="top: ` + y + `px; left: ` + x + `px;"
                               index="` + index + `"count="0"
                               >
-                         </div>`;
-        body.innerHTML += questHTML;
+                         </div>`);
+        $('body').append(questHTML);
         cacheQuestPath(quest);
     });
 
@@ -582,38 +582,38 @@ function drawPassengers(passengerList) {
     ctx.lineWidth = 1;
     passengerList.forEach((passenger, index) => {
         var [x, y] = globalToLocal(passenger.location);
-        passengerHTML = `<div class="passenger"
+        var passengerHTML = $(`<div class="passenger"
                               style="top: ` + y + `px; left: ` + x + `px;"
                               index="` + index + `"count="0"
                               >
-                         </div>`;
-        body.innerHTML += passengerHTML;
+                              </div>`);
+        $('body').append(passengerHTML);
 
         var [tx, ty] = globalToLocal(passenger.targetlocation);
-        passengertHTML = `<div id = "target`+ index +`" class="passengertarget"
+        var passengertHTML = $(`<div id = "target`+ index +`" class="passengertarget"
                               style="top: ` + ty + `px; left: ` + tx + `px;"
                               index="` + index + `"count="0"
                               >
-                         </div>`;
-        body.innerHTML += passengertHTML;
+                         </div>`);
+        $('body').append(passengertHTML);
 
 
     });
 	//add start
     var [sx, sy] = globalToLocal(start);
-    startHTML = `<div class="start"
+    var startHTML = $(`<div class="start"
                           style="top: ` + sy + `px; left: ` + sx + `px;"
                           >
-                     </div>`;
-    body.innerHTML += startHTML;
+                     </div>`);
+    $('body').append(startHTML);
 
 	//add target
     var [ttx, tty] = globalToLocal(target);
-    targetHTML = `<div class="target" id="tFlag"
+    var targetHTML = $(`<div class="target" id="tFlag"
                           style="top: ` + tty + `px; left: ` + ttx + `px;"
                           >
-                     </div>`;
-    body.innerHTML += targetHTML;
+                     </div>`);
+    $('body').append(targetHTML);
 
     $(".passenger").on("click", function(e) {
         if (!finished) {
@@ -718,7 +718,7 @@ function passengerClickHandler() {
         $("body").append(elem);
         // Clicking on the destination should remove it
         // So we need a handler for that
-        destElem.click(function(){
+        elem.click(function(){
             $(this).remove();
             // TODO: Remove the path from start to destination
         });
@@ -835,6 +835,7 @@ function activePassengers() {
       padding-left: 20px;
       display: flex;
       align-items: center;
+      z-index: 10;
   }
   .options {
       position: absolute;
