@@ -3,8 +3,8 @@
 <meta charset="utf-8"/>
 <script src="https://cdn.jsdelivr.net/npm/graphhopper-js-api-client/dist/graphhopper-client.js"></script>
 <script type="text/javascript">
-var scalex = 10;
-var scaley = 10;
+var scalex = 21;
+var scaley = 11.5;
 var mapCenter = [40.714728,-73.998672]
 var canvasW;
 var canvasH;
@@ -23,6 +23,7 @@ function setup()
     canvas = document.getElementById("canvas");
     canvas.width = document.body.clientWidth;
     canvas.height = document.body.clientHeight; 
+    //canvas.addEventListener("click", printMousePos);
 
     canvasW = canvas.width;
     canvasH = canvas.height;
@@ -33,9 +34,14 @@ function setup()
     ctx.stroke();
 }
 
+function printMousePos(event) {
+alert("clientX: " + event.clientX +
+    " - clientY: " + event.clientY);
+}
+
 function testrouting(){
-	var points = [[40.705116,-74.008831],
-		[40.714728,-73.998672]];
+	var points = [[40.705086,-74.016711],
+		[40.759967,-74.002850]];
 
 	getRouteData(points, drawRoute)
 }
@@ -45,13 +51,13 @@ function globalToLocal(p){
 	py = p[1];
 	px -= mapCenter[0];
 	py -= mapCenter[1];
-	px *= scalex;
+	px *= -scalex;
 	py *= scaley;
 	px += 1/2;
 	py += 1/2;
-	px *= canvasW;
-	py *= canvasH;
-	return [px,py];
+	px *= canvasH;
+	py *= canvasW;
+	return [py,px];
 }
 
 function localToGlobal(p){
@@ -61,11 +67,11 @@ function localToGlobal(p){
 	py /= canvasH;
 	px -= 1/2;
 	py -= 1/2;
-	px /= scalex;
-	py /= scaley;
+	px /= scaley;
+	py /= scalex;
 	px += mapCenter[0];
 	py += mapCenter[1];
-	return [px,py];
+	return [py,px];
 }
 
 function getRouteData(pointlist, fun){
@@ -85,7 +91,7 @@ function getRouteData(pointlist, fun){
 	console.log(json);
 	oldArr = json.paths[0].points.coordinates;
 	var res = [];
-	delta = 5;
+	delta = 1;
 	for (i = 0; i < oldArr.length; i=i+delta) {
 	  res.push(globalToLocal([oldArr[i][1],oldArr[i][0]]));
 	}
@@ -185,8 +191,8 @@ function mouseHandler() {
 </style>
 </head>
 <body id="body" onload="onload()">
-    <img id="map" src="http://staticmap.openstreetmap.de/staticmap.php?center=40.714728,-73.998672&zoom=14&size=1920x700&maptype=mapnik" class="coveredImage">
-    <canvas id="canvas" class="coveringCanvas" onclick="mouseHandler()">
+    <img id="map" src="http://staticmap.openstreetmap.de/staticmap.php?center=40.714728,-73.998672&zoom=14&size=1920x700&maptype=mapnik&markers= 40.705086,-74.016711,lightblue1| 40.759967,-74.002850,lightblue2" class="coveredImage">
+    <canvas onclick="test()" id="canvas" class="coveringCanvas" onclick="mouseHandler()">
     </canvas>
 </body>
 </html>
