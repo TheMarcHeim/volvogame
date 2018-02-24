@@ -24,7 +24,7 @@ function setup()
     canvas = document.getElementById("canvas");
     canvas.width = document.body.clientWidth;
     canvas.height = document.body.clientHeight; 
-    //canvas.addEventListener("click", printMousePos);
+    canvas.addEventListener("click", printMousePos);
 
     canvasW = canvas.width;
     canvasH = canvas.height;
@@ -210,7 +210,7 @@ function passengerClick() {
 </head>
 <body id="body" onload="onload()">
     <img id="map" src="http://staticmap.openstreetmap.de/staticmap.php?center=40.714728,-73.998672&zoom=14&size=1920x700&maptype=mapnik&markers= 40.705086,-74.016711,lightblue1| 40.759967,-74.002850,lightblue2" class="coveredImage">
-    <canvas onclick="test()" id="canvas" class="coveringCanvas" onclick="mouseHandler()">
+    <canvas id="canvas" class="coveringCanvas" onclick="mouseHandler()">
     </canvas>
 </body>
 </html>
