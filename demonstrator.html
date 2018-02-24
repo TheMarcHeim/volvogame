@@ -139,6 +139,13 @@ function recomputeRoute(passengers){
 			points.push(tpassengers[i].targetlocation);}
 		i++;
 	}
+	//check if all passengers are delivered
+	hasLeftInCar = 0;
+	passengers.forEach(passenger => {
+		if(!passenger.done){
+			hasLeftInCar=1;}
+	    });
+	//if(	
 
 	getRouteData(points, drawRoute);
 }
@@ -321,6 +328,14 @@ function drawPassengers(passengerList) {
                               >
                          </div>`;
         body.innerHTML += startHTML;
+
+	//add targer
+        var [ttx, tty] = globalToLocal(target);
+        targetHTML = `<div class="target" id="targetFlag"
+                              style="top: ` + tty + `px; left: ` + ttx + `px;"
+                              >
+                         </div>`;
+        body.innerHTML += targetHTML;
     });
 
     $(".passenger").on("click", function(e) {
@@ -405,7 +420,7 @@ function passengerClick() {
       position:absolute;
       top:0px;
       left:0px;
-      background-color: rgba(255, 0, 0);
+      background-color: rgba(255, 0, 0, 0);
       z-index: 0;
   }
   .passenger {
@@ -427,6 +442,14 @@ function passengerClick() {
       z-index: 1;
       border-radius: 10px;
       box-shadow: 5px 5px 5px grey;
+  }
+  .target {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-image: url('redflag.png');
+      background-size: cover;
+      z-index: 1;
   }
   .passengertarget {
       position: absolute;
