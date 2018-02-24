@@ -74,12 +74,12 @@ function getDirectDist() {
 
 function clearCanvases() {
     var canvas = document.getElementById("canvas");
-    canvas.innerHTML = "";
+    $(canvas).html('');
 	var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();
     var icanvas = document.getElementById("icanvas");
-    icanvas.innerHTML = "";
+    $(icanvas).html('');
     ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();
@@ -570,16 +570,17 @@ function passengerClickHandler() {
         var startYLocal = lastMouseY;
         [startXGlobal, startYGlobal] = localToGlobal([startXLocal, startYLocal]);
         // This div is drawn at its local coordinates and has its global coordinates saved
-        body.innerHTML += `<div class="start passengerStart" 
+        var startElem = $(`<div class="start passengerStart" 
                                 style="top:  ` + startYLocal + `px;
                                        left: ` + startXLocal + `px;
                                        z-index: 10" 
                                 data-X="` + startXGlobal + `" 
                                 data-Y="` + startYGlobal + `">
-                           </div>`;
+                           </div>`);
+        $('body').append(startElem);
         // Clicking on the start should remove it
         // So we need a handler for that
-        $(".passengerStart").click(function(){
+        startElem.on('click', function(){
             $(this).remove();
             $(".passengerDestination").remove();
         });
@@ -595,16 +596,17 @@ function passengerClickHandler() {
         var destinationYLocal = lastMouseY;
         [destinationXGlobal, destinationYGlobal] = localToGlobal([destinationXLocal, destinationYLocal]);
         // This div is drawn at its local coordinates and has its global coordinates saved
-        body.innerHTML += `<div class="target passengerDestination" 
+        var destElem = $(`<div class="target passengerDestination" 
                                 style="top:  ` + destinationYLocal + `px;
                                        left: ` + destinationXLocal + `px;
                                        z-index: 10" 
                                 data-X="` + destinationXGlobal + `" 
                                 data-Y="` + destinationYGlobal + `">
-                           </div>`;
+                           </div>`);
+        $('body').append(destElem);
         // Clicking on the destination should remove it
         // So we need a handler for that
-        $("passengerDestination").click(function(){
+        destElem.click(function(){
             $(this).remove();
             // TODO: Remove the path from start to destination
         });
