@@ -458,6 +458,13 @@ function drawPassengerArrows(){
 	ctx.stroke();
 }
 
+function drawQuests(questList){
+    var body = document.getElementById("body");
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+
+}
+
 function drawPassengers(passengerList) {
     var body = document.getElementById("body");
     var canvas = document.getElementById("canvas");
@@ -598,6 +605,16 @@ function activePassengers() {
       z-index: 0;
   }
   .passenger {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-image: url('passengerGreen.png');
+      background-size: cover;
+      z-index: 1;
+      border-radius: 10px;
+      box-shadow: 5px 5px 5px grey;
+  }
+  .quest {
       position: absolute;
       width: 20px;
       height: 20px;
