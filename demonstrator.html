@@ -314,6 +314,14 @@ function drawPassengers(passengerList) {
                               >
                          </div>`;
         body.innerHTML += passengertHTML;
+
+	//add start
+        var [sx, sy] = globalToLocal(start);
+        startHTML = `<div class="start"
+                              style="top: ` + sy + `px; left: ` + sx + `px;"
+                              >
+                         </div>`;
+        body.innerHTML += startHTML;
     });
 
     $(".passenger").on("click", function(e) {
@@ -409,6 +417,16 @@ function passengerClick() {
       width: 20px;
       height: 20px;
       background-image: url('passengerGreen.png');
+      background-size: cover;
+      z-index: 1;
+      border-radius: 10px;
+      box-shadow: 5px 5px 5px grey;
+  }
+  .start {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-image: url('passengerRed.png');
       background-size: cover;
       z-index: 1;
       border-radius: 10px;

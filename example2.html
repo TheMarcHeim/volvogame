@@ -1,0 +1,187 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+
+<script type="text/javascript" src="example2_files/article.js">
+</script>
+
+<script type="text/javascript">
+
+var env;
+var ctx;
+var p1, p2;
+var joint;
+var dt = 0.05;
+var width, height;
+var tempVector;
+var selectPointmass;
+var zeroForce = new Vector(0.0, 0.0);
+var keyboardForce = new Vector(0.0, 0.0);
+var gravity = new Vector(0.0, 1.0);
+var savedMouseCoords = null;
+
+function timeout()
+{
+  if(selectPointmass != null && savedMouseCoords != null)
+    selectPointmass.setPos(savedMouseCoords.x, savedMouseCoords.y);
+
+  p1.addForce(gravity);
+  p2.addForce(gravity);
+
+  p1.move(dt);
+  p2.move(dt);
+
+  p1.setForce(zeroForce);
+  p2.setForce(zeroForce);
+
+  if(env.collision(p1.getPos(), p1.getPrevPos()) == true)
+    p1.setFriction(0.1);
+  else
+    p1.setFriction(0.01);
+
+  if(env.collision(p2.getPos(), p2.getPrevPos()) == true)
+    p2.setFriction(0.1);
+  else
+    p2.setFriction(0.01);
+
+  joint.sc();
+
+  ctx.clearRect(0, 0, width, height);
+  env.draw(ctx, width);
+  joint.draw(ctx, width);
+  p1.draw(ctx, width);
+  p2.draw(ctx, width);
+
+  setTimeout('timeout()', 30);
+}
+
+function initExample2(aWidth, aHeight)
+{
+    var canvas = document.getElementById('example2');
+    ctx = canvas.getContext('2d');
+
+    width = aWidth;
+    height = aHeight;
+    tempVector = new Vector(0.0, 0.0);
+    selectPointmass = null;
+
+    env = new Environment(0.15, 0.15, 0.70, 0.70);
+    p1 = new PointMass(0.2, 0.6, 1.0);
+    p2 = new PointMass(0.6, 0.5, 1.0);
+    joint = new Joint(p1, p2, 0.8, 1.2);
+
+    function getMouseCoords(event)
+    {
+      if(event == null)
+      {
+        event = window.event;
+      }
+      if(event == null)
+      {
+        return null;
+      }
+      if(event.pageX || event.pageY)
+      {
+        return {x:event.pageX / width, y:event.pageY / width};
+      }
+      return null;
+    }
+    document.onmousedown = function(event)
+    {
+      var mouseCoords;
+
+      mouseCoords = getMouseCoords(event);
+      savedMouseCoords = mouseCoords;
+      if(mouseCoords == null)
+        return;
+
+      tempVector.setX(mouseCoords.x);
+      tempVector.setY(mouseCoords.y);
+
+      if(tempVector.dist(p1.getPos()) < 0.1)
+        selectPointmass = p1;
+      else if(tempVector.dist(p2.getPos()) < 0.1)
+        selectPointmass = p2;
+    }
+    document.onmouseup = function(event)
+    {
+      selectPointmass = null;
+    }
+    document.onmousemove = function(event)
+    {
+      var mouseCoords;
+
+      mouseCoords = getMouseCoords(event);
+      savedMouseCoords = mouseCoords;
+    }
+
+    document.onkeydown = function(event)
+    {
+      var keyCode;
+
+      if(event == null)
+        keyCode = window.event.keyCode;
+      else
+        keyCode = event.keyCode;
+
+      var force = 10.0;
+
+      switch(keyCode)
+      {
+        case 37:
+          keyboardForce.setX(-force);
+          keyboardForce.setY(0.0);
+          p1.addForce(keyboardForce);
+          p2.addForce(keyboardForce);
+          break;
+        case 38:
+          keyboardForce.setX(0.0);
+          keyboardForce.setY(-force);
+          p1.addForce(keyboardForce);
+          p2.addForce(keyboardForce);
+          break;
+        case 39:
+          keyboardForce.setX(force);
+          keyboardForce.setY(0.0);
+          p1.addForce(keyboardForce);
+          p2.addForce(keyboardForce);
+          break;
+        case 40:
+          keyboardForce.setX(0.0);
+          keyboardForce.setY(force);
+          p1.addForce(keyboardForce);
+          p2.addForce(keyboardForce);
+          break;
+        case 71:
+          if(gravity.getY() == 1.0)
+            gravity.setY(0.0);
+          else
+            gravity.setY(1.0);
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    timeout();
+}
+
+</script>
+
+</head>
+
+<body onload="initExample2(300, 300)">
+
+<canvas id="example2" width="300" height="300"></canvas>
+<br>
+<br>
+Use arrow keys to move things around.<br>
+Toggle gravity with 'g'.<br>
+Use mouse to move individual pointmasses.<br>
+
+<br>
+<a href="http://blobsallad.se/article/example4.html">try the editor</a>
+<br>
+
+
+</body></html>
