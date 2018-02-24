@@ -9,11 +9,11 @@ function setup()
 {
     map = document.getElementById("map");
     canvas = document.getElementById("canvas");
-	
 
-
-    canvasW = canvas.width;
-    canvasH = canvas.height;
+    var ctx = canvas.getContext("2d");
+    ctx.moveTo(0,0);
+    ctx.lineTo(200,100);
+    ctx.stroke();
 }
 
 function getRouteData(pointlist){
