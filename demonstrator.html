@@ -18,6 +18,8 @@ var lastType = 0
 var lastComputedInd = -1;
 var lastMouseX = 0;
 var lastMouseY = 0;
+var canFinish = 1;
+var finished = 0;
 var start = [40.705086,-74.016711];
 var target = [40.734967,-73.992850];
 
@@ -62,6 +64,12 @@ function clearCanvases() {
     ctx.beginPath();
 }
 
+function onMouseMove(e){
+	    updateStraightLines(e.pageX,e.pageY);
+		lastMouseX=e.pageX;
+		lastMouseY=e.pageY;
+	}
+
 function setup()
 {
     map = document.getElementById("map");
@@ -80,17 +88,38 @@ function setup()
     ctx.moveTo(0,0);
     ctx.lineTo(200,100);
     ctx.stroke();
-	$("body").mousemove(function(e) {
-        if ($(".options").attr("data-option") == "driver") {
-	        updateStraightLines(e.pageX,e.pageY);
-		    lastMouseX=e.pageX;
-		    lastMouseY=e.pageY;
-        }
-	})
+	$("body").mousemove(onMouseMove);
 
 }
 
+
+
+function reset(driving){
+	if(driving){
+	     setup();
+	     passengerList = getPassengers();
+	     drawPassengers(passengerList);
+	     drawPassengerArrows()
+	}else{
+		$("body").off();
+	    passengers = null;//just for testing
+	    var canvas = document.getElementById("canvas");
+	    var ctx = canvas.getContext("2d");
+	    ctx.clearRect(0, 0, canvas.width, canvas.height);
+	    ctx.beginPath();
+	    var icanvas = document.getElementById("icanvas");
+	    var ictx = canvas.getContext("2d");
+	    ictx.clearRect(0, 0, icanvas.width, icanvas.height);
+	    ictx.beginPath();
+	    $("body").removeClass("passenger");
+	    $("body").removeClass("start");
+	    $("body").removeClass("target");
+	    $("body").removeClass("passengertarget");
+	}	
+}
+
 function updateStraightLines(x,y){
+	if(!finished){
 	    var canvas = document.getElementById("icanvas");
 	    var ctx = canvas.getContext("2d");
 
@@ -120,6 +149,7 @@ function updateStraightLines(x,y){
 		ctx.setLineDash([5, 15]);
 		ctx.lineTo(ta[0],ta[1]);
 		ctx.stroke();}
+	}
 }
 
 function testrouting(){
@@ -174,6 +204,9 @@ function recomputeRoute(passengers){
 			points.push(tpassengers[i].targetlocation);}
 		i++;
 	}
+	if(finished){
+		points.push(target);
+	}
 	//check if all passengers are delivered
 	hasLeftInCar = 0;
 	passengers.forEach(passenger => {
@@ -181,12 +214,18 @@ function recomputeRoute(passengers){
 			hasLeftInCar=1;}
 	    });
 	if(hasLeftInCar){
+                canFinish = 0;
 		$("#tFlag").css("background-image", "url('redflag.png')");
 	}else{
+                canFinish = 1;
 		$("#tFlag").css("background-image", "url('greenflag.png')");
+	}
+	if(finished){
+		$("#tFlag").css("background-image", "url('checkflag.png')");
 	}
 	var miles = getFreeMiles(passengers);
 
+	
 	$(".incentiveDisplay").text("Miles gained: "+miles);
 	getRouteData(points, drawRoute);
 }
@@ -333,7 +372,7 @@ function drawPassengerArrows(){
 ctx.beginPath();
 	ctx.lineWidth=10;
 	ctx.lineCap="round";
-	ctx.strokeStyle = 'rgba(255,0,0,0.3)';
+	ctx.strokeStyle = 'rgba(0,255,0,0.3)';
 
    passengerList.forEach(passenger => {
 	st = globalToLocal(passenger.location);
@@ -385,7 +424,7 @@ function drawPassengers(passengerList) {
                          </div>`;
         body.innerHTML += startHTML;
 
-	//add targer
+	//add target
         var [ttx, tty] = globalToLocal(target);
         targetHTML = `<div class="target" id="tFlag"
                               style="top: ` + tty + `px; left: ` + ttx + `px;"
@@ -394,6 +433,7 @@ function drawPassengers(passengerList) {
         body.innerHTML += targetHTML;
 
     $(".passenger").on("click", function(e) {
+	if(!finished){
         var index = $(this).attr("index");
         if (passengerList[index].active == true && (passengerList[index].count==count-1 || passengerList[index].tcount==count-1)) {
             passengerList[index].active = false;
@@ -407,7 +447,7 @@ function drawPassengers(passengerList) {
 	        if(passengerList[index].done){
 		        passengerList[index].tcount = count++;
 		    }
-	        lastInd = index;
+	        lastInd = index; 
 	        lastType = 0;
 	        lastLoc = globalToLocal(passengerList[index].location);
 	        $(this).attr("count",count);
@@ -415,12 +455,14 @@ function drawPassengers(passengerList) {
         }
         //console.log(activePassengers());
 	recomputeRoute(activePassengers());
+	}
     });
 
 
     $(".passengertarget").on("click", function(e) {
+	if(!finished){
         var index = $(this).attr("index");
-	$(this).hide();
+	$(this).css("background-image", "url('passengerYellowt.png')");;
 	//TODO: launch animation
 	lastInd = index;
 	lastType = 1;
@@ -429,9 +471,21 @@ function drawPassengers(passengerList) {
 		passengerList[index].done = true;
         }
         passengerList[index].tcount = count++;
-	recomputeRoute(activePassengers());
+	recomputeRoute(activePassengers());}
     });
 	$(".passengertarget").hide();
+
+    $(".target").on("click", function(e){
+	if(finished){
+		finished = 0;}
+        else if(canFinish && !finished){
+	    var canvas = document.getElementById("icanvas");
+	    var ctx = canvas.getContext("2d");
+	    ctx.clearRect(0, 0, canvas.width, canvas.height);
+		finished = 1;
+	}
+	recomputeRoute(activePassengers());
+    });
 }
 
 function activePassengers() {
