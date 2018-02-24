@@ -20,6 +20,7 @@ var lastMouseY = 0;
 var canFinish = 1;
 var finished = 0;
 var directDist = 0;
+var totalDist = 0;
 var start = [40.705086,-74.016711];
 var target = [40.734967,-73.992850];
 
@@ -287,6 +288,7 @@ function localToGlobal(p) {
 	return [py,px];
 }
 
+
 function getRouteData(pointlist, fun, ind) {
 	if (pointlist.length<2) {
 	    var canvas = document.getElementById("canvas");
@@ -310,6 +312,11 @@ function getRouteData(pointlist, fun, ind) {
 	    ghRouting.doRequest().then(function(json) {
 		    //console.log(json);
 		    oldArr = json.paths[0].points.coordinates;
+            totalDist = json.paths[0].distance;
+            
+	    //var miles = getFreeMiles(passengerList);
+	    //alert(miles);
+            //$(".incentiveDisplay").text("Miles gained: " + miles+"/lost: "+totalDist-directDist);
 		    var res = [];
 		    delta = 1;
 		    for (i = 0; i < oldArr.length; i=i+delta) {
