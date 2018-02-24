@@ -104,6 +104,7 @@ function setup()
 
     canvasW = canvas.width;
     canvasH = canvas.height;
+    finished = false;
 
     getDirectDist();
 
@@ -259,7 +260,7 @@ function recomputeRoute(passengers){
 		$("#tFlag").css("background-image", "url('checkflag.png')");
 	}
 	var miles = getFreeMiles(passengers);
-
+    
 	
 	$(".incentiveDisplay").text("Miles gained: "+miles);
 	getRouteData(points, drawRoute);
