@@ -1,5 +1,6 @@
 <html>
 <head>
+<meta charset="utf-8"/>
 <script src="https://cdn.jsdelivr.net/npm/graphhopper-js-api-client/dist/graphhopper-client.js"></script>
 <script type="text/javascript">
 function onload(){
@@ -24,8 +25,8 @@ function setup()
 }
 
 function testrouting(){
-	var points = [[8.34234,48.23424],
-		[8.34423,48.26424]];
+	var points = [[49.932707,11.588051],
+		[50.3404,11.64705]];
 
 	getRouteData(points)
 }
@@ -36,7 +37,6 @@ function getRouteData(pointlist){
       vehicle: "car",
       elevation: false
     });
-	alert(pointlist[0]);
 	var arrayLength = pointlist.length;
 	for (var i = 0; i < arrayLength; i++) {
 		ghRouting.addPoint(new GHInput(pointlist[i][0], pointlist[i][1]));
@@ -45,8 +45,14 @@ function getRouteData(pointlist){
 
     ghRouting.doRequest()
       .then(function(json) {
- 	alert(json);
         console.log(json);
+	oldArr = json.paths[0].points.coordinates;
+	var res = [];
+	delta = 10;
+	for (i = 0; i < oldArr.length; i=i+delta) {
+	  res.push(oldArr[i]);
+	}
+	console.log(res);
       })
       .catch(function(err) {
         console.error(err.message);
