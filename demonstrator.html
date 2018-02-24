@@ -77,13 +77,13 @@ function getDirectDist() {
 
 function clearCanvases() {
     var canvas = document.getElementById("canvas");
-    $(canvas).html('');
+    //$(canvas).html('');
 	var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();
     var icanvas = document.getElementById("icanvas");
-    $(icanvas).html('');
-    ctx = canvas.getContext("2d");
+    //$(icanvas).html('');
+    ctx = icanvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();
 }
@@ -95,20 +95,13 @@ function cacheQuestPath(quest){
 	      elevation: false
 	    });
         from = quest.location;
-        to = quest.targetlocation
+        to = quest.targetlocation;
 	    ghRouting.addPoint(new GHInput(from[0], from[1]));
 	    ghRouting.addPoint(new GHInput(to[0], to[1]));
 
 	    ghRouting.doRequest().then(function(json) {
 		    //console.log(json);
             console.log(json);
-	        var canvas = document.getElementById("canvas");
-	        var ctx = canvas.getContext("2d");
-		    ctx.lineWidth=10;
-		    ctx.lineCap="round";
-		    ctx.strokeStyle = 'rgba(165,177,248,0.5)';
-	        ctx.clearRect(0, 0, canvas.width, canvas.height);
-	        ctx.beginPath();
             var pointlist = json.paths[0].points.coordinates;
             quest.path = pointlist;
 	    }).catch(function(err) {
@@ -206,6 +199,7 @@ function reset(driving) {
 	    drawQuests(questList);
 	}
 
+	$(".options").off();
     $(".options").on("click", function() {
         if ($(this).attr("data-option") == "driver") {
             //clearCanvases();
@@ -536,11 +530,13 @@ function drawQuests(questList){
         activeQuest = index;
         questList[index].anim = 0;
         animate(questList[index]);
+	$(".passengerStart").remove();
+	$(".passengerDestination").remove();
     })
 }
 
 function animate(quest){
-    quest.anim+=0.003;
+    quest.anim+=0.004;
     if(quest.anim<1){
         setTimeout(animate, 1,quest);
     }   
