@@ -4,6 +4,9 @@
 <script type="text/javascript">
 function onload(){
      setup();
+     passengerList = getPassengers();
+     drawPassengers(passengerList);
+     drawRoute();
 }
 
 function setup()
@@ -26,6 +29,48 @@ function setup()
 function getRouteData(pointlist){
 
 }
+
+function drawRoute(pointlist) {
+    // pointlist = [[0,0], [20,20], [30, 10]]; For testing purpouses
+
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.moveTo(pointlist[0][0], pointlist[0][1]);
+
+    pointlist.forEach(point => {
+        ctx.lineTo(point[0], point[1]);
+        ctx.stroke();
+        ctx.moveTo(point[0], point[1]);
+    });
+}
+
+/// Manage Passengers
+
+class Passenger {
+    constructor(location, incentive) {
+        this.location = location;
+        this.incentive = incentive;
+    }
+}
+
+function getPassengers() {
+    passengerList = [new Passenger((50,50), 4), 
+                     new Passenger((40,70), 3)];
+    return passengerList;
+}
+
+function drawPassengers(passengerList) {
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+
+    passengerList.forEach(passenger => {
+        ctx.beginPath();
+        var x, y = passenger.location;
+        ctx.arc(x, y, 20, 0, 2*Math.PI);
+        ctx.stroke();
+    });
+}
+
 </script>
 
 
