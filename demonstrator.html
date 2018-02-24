@@ -14,19 +14,43 @@ function setup()
     map = document.getElementById("map");
     canvas = document.getElementById("canvas");
 
- 	var ghRouting = new GraphHopper.Routing({
+
+
+    var ctx = canvas.getContext("2d");
+    ctx.moveTo(0,0);
+    ctx.lineTo(200,100);
+    ctx.stroke();
+}
+
+function testrouting(){
+	points = [(8.34234,48.23424),(8.34423,48.26424)]
+	getRouteData(pointlist)
+}
+
+function getRouteData(pointlist){
+  	var ghRouting = new GraphHopper.Routing({
       key: "792f5935-6974-4c19-9ada-2742bbcdc54f",
       vehicle: "car",
       elevation: false
     });
-}
+	
+	for (var p in pointlist){
+		ghRouting.addPoint(new GHInput(p[0], p[1]));
+	}
 
-function getRouteData(pointlist){
+    ghRouting.doRequest()
+      .then(function(json) {
+ 	alert(json);
+        console.log(json);
+      })
+      .catch(function(err) {
+        console.error(err.message);
+      });
 
 }
 
 function drawRoute(pointlist) {
-    pointlist = [[0,0], [20,20], [30,10]]; // For testing purpouses
+    pointlist = [[0,0], [20,20], [30, 10]];// For testing purpouses
 
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
