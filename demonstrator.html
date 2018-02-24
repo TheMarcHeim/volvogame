@@ -30,6 +30,21 @@ function onload(){
 //testrouting();
 }
 
+$(document).ready(function(){
+    $(".options").attr("data-option", "driver");
+    $(".options").html("I want to be driven");
+    $(".options").on("click", function() {
+        console.log("AHDGADFG");
+        if ($(this).attr("data-option") == "driver") {
+            $(this).attr("data-option", "passenger");
+            $(this).html("I want to drive");
+        } else {
+            $(this).attr("data-option", "driver");
+            $(this).html("I want to be driven");
+        }
+    });
+})
+
 function setup()
 {
     map = document.getElementById("map");
@@ -53,6 +68,7 @@ function setup()
 		lastMouseX=e.pageX;
 		lastMouseY=e.pageY;
 	})
+
 }
 
 function updateStraightLines(x,y){
@@ -369,16 +385,16 @@ function drawPassengers(passengerList) {
 	    $( "#target"+index ).hide();
             $(this).css("background-image", "url('passengerGreen.png')");
         } else {
-	    $( "#target"+index ).show();
+	        $( "#target"+index ).show();
             passengerList[index].active = true;
             passengerList[index].count = count++;
-	    if(passengerList[index].done){
-		passengerList[index].tcount = count++;
-		}
-	    lastInd = index;
-	    lastType = 0;
-	    lastLoc = globalToLocal(passengerList[index].location);
-	    $(this).attr("count",count);
+	        if(passengerList[index].done){
+		        passengerList[index].tcount = count++;
+		    }
+	        lastInd = index;
+	        lastType = 0;
+	        lastLoc = globalToLocal(passengerList[index].location);
+	        $(this).attr("count",count);
             $(this).css("background-image", "url('passengerYellow.png')");
         }
         //console.log(activePassengers());
@@ -410,14 +426,6 @@ function activePassengers() {
         }
     });
     return list;
-}
-
-/// Manage UI
-
-
-
-function passengerClick() {
-    
 }
 
 </script>
@@ -499,16 +507,22 @@ function passengerClick() {
       align-items: center;
   }
   .options {
+      position: absolute;
       width: 280px;
-      height: 60px;
+      height: 40px;
       background-color: rgb(108, 108, 224);
       border: 1px solid grey;
       color: white;
       z-index: 10;
       margin-top: 10px;
       padding-left: 20px;
+<<<<<<< HEAD
+      padding-top: 15px;
+      align-items: center;
+=======
       display: flex;
       align-items: center; 
+>>>>>>> 8a36e687d19a97d5a9320ccdec16ba4ca62c0cc9
   }
 </style>
 </head>
@@ -516,12 +530,12 @@ function passengerClick() {
     <img id="map" src="http://staticmap.openstreetmap.de/staticmap.php?center=40.714728,-73.998672&zoom=14&size=1920x700&maptype=positron" class="coveredImage">
     <canvas id="canvas" class="coveringCanvas">
     </canvas>
-    <canvas id="icanvas" class="coveringCanvas"></canvas>
+    <canvas id="icanvas" class="coveringCanvas">
+    </canvas>
     <div class="incentiveDisplay">
         Miles gained: 0
     </div>
-    <div class="options">
-        I want to be driven
+    <div class="options" data-option="driver">
     </div>
 </body>
 </html>
