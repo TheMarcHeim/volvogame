@@ -43,8 +43,8 @@ $(document).ready(function(){
             $(this).attr("data-option", "passenger");
             $(this).html("I want to drive");
         } else {
-            clearCanvases();
-
+            //clearCanvases();
+            reset(0);
             $(this).attr("data-option", "driver");
             $(this).html("I want to be driven");
         }
