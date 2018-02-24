@@ -18,6 +18,7 @@ var lastType = 0
 var lastComputedInd = -1;
 var lastMouseX = 0;
 var lastMouseY = 0;
+var canFinish = 1;
 var start = [40.705086,-74.016711];
 var target = [40.734967,-73.992850];
 
@@ -162,8 +163,10 @@ function recomputeRoute(passengers){
 			hasLeftInCar=1;}
 	    });
 	if(hasLeftInCar){
+                canFinish = 0;
 		$("#tFlag").css("background-image", "url('redflag.png')");
 	}else{
+                canFinish = 1;
 		$("#tFlag").css("background-image", "url('greenflag.png')");
 	}
 	var miles = getFreeMiles(passengers);
@@ -317,7 +320,7 @@ function drawPassengerArrows(){
 ctx.beginPath();
 	ctx.lineWidth=10;
 	ctx.lineCap="round";
-	ctx.strokeStyle = 'rgba(255,0,0,0.3)';
+	ctx.strokeStyle = 'rgba(0,255,0,0.3)';
 
    passengerList.forEach(passenger => {
 	st = globalToLocal(passenger.location);
@@ -369,7 +372,7 @@ function drawPassengers(passengerList) {
                          </div>`;
         body.innerHTML += startHTML;
 
-	//add targer
+	//add target
         var [ttx, tty] = globalToLocal(target);
         targetHTML = `<div class="target" id="tFlag"
                               style="top: ` + tty + `px; left: ` + ttx + `px;"
@@ -416,6 +419,13 @@ function drawPassengers(passengerList) {
 	recomputeRoute(activePassengers());
     });
 	$(".passengertarget").hide();
+
+    $(".target").on("click", function(e){
+        
+
+
+
+    }
 }
 
 function activePassengers() {
@@ -516,13 +526,8 @@ function activePassengers() {
       z-index: 10;
       margin-top: 10px;
       padding-left: 20px;
-<<<<<<< HEAD
-      padding-top: 15px;
-      align-items: center;
-=======
       display: flex;
       align-items: center; 
->>>>>>> 8a36e687d19a97d5a9320ccdec16ba4ca62c0cc9
   }
 </style>
 </head>
