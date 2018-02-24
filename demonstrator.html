@@ -8,7 +8,7 @@
 var scalex = 21;
 var scaley = 11.5;
 var mapCenter = [40.714728,-73.998672]
-
+var mode = 1;
 var passengerList;
 var count = 0;
 var lastInd = -1;
@@ -24,12 +24,16 @@ var totalDist = 0;
 var start = [40.705086,-74.016711];
 var target = [40.734967,-73.992850];
 
+var activeQuest = -1;
+
 function onload(){
     setup();  
     passengerList = getPassengers();
     drawPassengers(passengerList);
     drawPassengerArrows()
 }
+
+
 
 $(document).ready(function(){
 
@@ -85,6 +89,34 @@ function clearCanvases() {
     ctx.beginPath();
 }
 
+function cacheQuestPath(quest){
+    var ghRouting = new GraphHopper.Routing({
+	      key: "792f5935-6974-4c19-9ada-2742bbcdc54f",
+	      vehicle: "car",
+	      elevation: false
+	    });
+        from = quest.location;
+        to = quest.targetlocation
+	    ghRouting.addPoint(new GHInput(from[0], from[1]));
+	    ghRouting.addPoint(new GHInput(to[0], to[1]));
+
+	    ghRouting.doRequest().then(function(json) {
+		    //console.log(json);
+            console.log(json);
+	        var canvas = document.getElementById("canvas");
+	        var ctx = canvas.getContext("2d");
+		    ctx.lineWidth=10;
+		    ctx.lineCap="round";
+		    ctx.strokeStyle = 'rgba(165,177,248,0.5)';
+	        ctx.clearRect(0, 0, canvas.width, canvas.height);
+	        ctx.beginPath();
+            var pointlist = json.paths[0].points.coordinates;
+            quest.path = pointlist;
+	    }).catch(function(err) {
+		    console.error(err.message);
+	    });
+}
+
 function drawPath(from, to){
 
     var ghRouting = new GraphHopper.Routing({
@@ -102,12 +134,16 @@ function drawPath(from, to){
             var ctx = canvas.getContext("2d");
             ctx.lineWidth=10;
             ctx.lineCap="round";
-            ctx.strokeStyle = 'rgba(165,177,248,0.5)';
+            ctx.strokeStyle = 'rgba(65,77,48,0.5)';
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.beginPath();
-            ctx.moveTo(pointlist[0][0], pointlist[0][1]);
-
-            pointlist.forEach(point => {
+            pointlist = json.paths[0].points.coordinates;
+            cpoint = pointlist[0];
+            point = globalToLocal([cpoint[1],cpoint[0]])
+            ctx.moveTo(point[0], point[1]);
+     
+            pointlist.forEach(cpoint => {
+            point = globalToLocal([cpoint[1],cpoint[0]]);
                 ctx.lineTo(point[0], point[1]);
                 ctx.stroke();
                 ctx.moveTo(point[0], point[1]);
@@ -121,7 +157,8 @@ function drawPath(from, to){
 
 
 function onMouseMove(e) {
-	updateStraightLines(e.pageX,e.pageY);
+    if(mode){
+	updateStraightLines(e.pageX,e.pageY);}
 	lastMouseX=e.pageX;
 	lastMouseY=e.pageY;
 }
@@ -150,8 +187,11 @@ function setup()
 
 
 function reset(driving) {
+    mode = driving;
 	if (driving) {
         clearCanvases();
+        $('.quest').remove();
+        $('.passengertarget').remove();
 	    setup();
 	    passengerList = getPassengers();
 	    drawPassengers(passengerList);
@@ -162,6 +202,9 @@ function reset(driving) {
 	    $('.start').remove();
 	    $('.target').remove();
 	    $('.passengertarget').remove();
+        questList = getQuests();
+        console.log(questList);
+	    drawQuests(questList);
 	}
 
     $(".options").on("click", function() {
@@ -406,6 +449,25 @@ function getPassengers() {
     return passengerList;
 }
 
+class Quest {
+    constructor(location, incentive, targetlocation) {
+        this.location = location;
+	    this.targetlocation = targetlocation;
+        this.incentive = incentive;
+        this.path = [];
+        this.anim = 0;
+    }
+}
+
+
+function getQuests() {
+//TODO: load CSV
+    questList = [new Quest(localToGlobal([550,50]), 4,localToGlobal([350,80])), 
+                     new Quest(localToGlobal([660,170]), 3,localToGlobal([500,80])),
+		     new Quest(localToGlobal([750,100]), 4,localToGlobal([550,80])), ];
+    return questList;
+}
+
 function getFreeMiles(passengers){
 	var miles = 0;
 	passengers.forEach(passenger => {
@@ -457,9 +519,59 @@ function drawQuests(questList){
     var body = document.getElementById("body");
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
+    
+    questList.forEach((quest,index)=>{
+        var [x, y] = globalToLocal(quest.location);
 
+        var questHTML = `<div class="quest"
+                              style="top: ` + y + `px; left: ` + x + `px;"
+                              index="` + index + `"count="0"
+                              >
+                         </div>`;
+        body.innerHTML += questHTML;
+        cacheQuestPath(quest);
+    });
+
+    $(".quest").on("click", function(e) {
+        var index = $(this).attr("index");
+        activeQuest = index;
+        questList[index].anim = 0;
+        animate(questList[index]);
+    })
 }
 
+function animate(quest){
+    quest.anim+=0.003;
+    if(quest.anim<1){
+        setTimeout(animate, 1,quest);
+    }   
+    drawActiveQuest();
+}
+
+function drawActiveQuest(){
+	var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+	ctx.lineWidth=10;
+	ctx.lineCap="round";
+	ctx.strokeStyle = 'rgba(165,177,248,0.5)';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    var pointlist = questList[activeQuest].path;
+    cpoint = pointlist[0];
+    point = globalToLocal([cpoint[1],cpoint[0]])
+    ctx.moveTo(point[0], point[1]);
+
+    maxl = pointlist.length*questList[activeQuest].anim;
+    var i = 0;
+    pointlist.forEach(cpoint => {
+    i++;
+    if(i<maxl){
+    point = globalToLocal([cpoint[1],cpoint[0]]);
+	ctx.lineTo(point[0], point[1]);
+	ctx.stroke();
+	ctx.moveTo(point[0], point[1]);}});
+
+}
 function drawPassengers(passengerList) {
     var body = document.getElementById("body");
     var canvas = document.getElementById("canvas");
@@ -596,14 +708,14 @@ function passengerClickHandler() {
         var destinationYLocal = lastMouseY;
         [destinationXGlobal, destinationYGlobal] = localToGlobal([destinationXLocal, destinationYLocal]);
         // This div is drawn at its local coordinates and has its global coordinates saved
-        var destElem = $(`<div class="target passengerDestination" 
+        var elem = $(`<div class="target passengerDestination" 
                                 style="top:  ` + destinationYLocal + `px;
                                        left: ` + destinationXLocal + `px;
                                        z-index: 10" 
                                 data-X="` + destinationXGlobal + `" 
                                 data-Y="` + destinationYGlobal + `">
                            </div>`);
-        $('body').append(destElem);
+        $("body").append(elem);
         // Clicking on the destination should remove it
         // So we need a handler for that
         destElem.click(function(){
@@ -615,7 +727,6 @@ function passengerClickHandler() {
         var startX = $(".passengerStart").attr("data-X");
         var startY = $(".passengerStart").attr("data-Y");
 
-        console.log("I AM TRYING TO DRAW A PATH");
         drawPath([startX, startY], [destinationXGlobal, destinationYGlobal]);
     } 
 }
@@ -680,7 +791,7 @@ function activePassengers() {
       position: absolute;
       width: 20px;
       height: 20px;
-      background-image: url('passengerGreen.png');
+      background-image: url('questMarker.png');
       background-size: cover;
       z-index: 1;
       border-radius: 10px;
