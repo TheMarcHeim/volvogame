@@ -13,6 +13,7 @@ var passengerList;
 var count = 0;
 var lastInd = -1;
 var lastLoc = null;
+var lastType = 0
 var lastComputedInd = -1;
 var lastMouseX = 0;
 var lastMouseY = 0;
@@ -107,7 +108,10 @@ function recomputeRoute(passengers){
 	});
 	if(passengers.length>0){
 	lastInd = passengers[passengers.length-1].index;
-	lastLoc = globalToLocal(passengers[passengers.length-1].location);}
+	if(lastType){
+	lastLoc = globalToLocal(passengers[passengers.length-1].targetlocation);}
+	else{
+	lastLoc = globalToLocal(passengers[passengers.length-1].location);}}
 	var points = [start];
 	    passengers.forEach(passenger => {
 		points.push(passenger.location);
@@ -316,14 +320,17 @@ function drawPassengers(passengerList) {
         if (passengerList[index].active == true && (passengerList[index].count==count-1 || passengerList[index].tcount==count-1)) {
             passengerList[index].active = false;
             passengerList[index].done = false;
+	    $( "#target"+index ).hide();
             $(this).css("background-image", "url('passengerGreen.png')");
         } else {
+	    $( "#target"+index ).show();
             passengerList[index].active = true;
             passengerList[index].count = count++;
 	    if(passengerList[index].done){
 		passengerList[index].tcount = count++;
 		}
 	    lastInd = index;
+	    lastType = 0;
 	    lastLoc = globalToLocal(passengerList[index].location);
 	    $(this).attr("count",count);
             $(this).css("background-image", "url('passengerYellow.png')");
@@ -338,6 +345,7 @@ function drawPassengers(passengerList) {
 	$(this).hide();
 	//TODO: launch animation
 	lastInd = index;
+	lastType = 1;
 	lastLoc = globalToLocal(passengerList[index].targetlocation);
 	if(passengerList[index].active){
 		passengerList[index].done = true;
