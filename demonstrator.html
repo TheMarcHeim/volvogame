@@ -3,6 +3,7 @@
 <script type="text/javascript">
 function onload(){
      setup();
+     drawRoute();
 }
 
 function setup()
@@ -18,6 +19,20 @@ function setup()
 
 function getRouteData(pointlist){
 
+}
+
+function drawRoute(pointlist) {
+    // pointlist = [[0,0], [20,20], [30, 10]]; For testing purpouses
+
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.moveTo(pointlist[0][0], pointlist[0][1]);
+
+    pointlist.forEach(point => {
+        ctx.lineTo(point[0], point[1]);
+        ctx.stroke();
+        ctx.moveTo(point[0], point[1]);
+    });
 }
 </script>
 
