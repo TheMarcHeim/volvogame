@@ -56,6 +56,15 @@ function testpoint(p){
 	getRouteData(points, drawRoute)
 }
 
+function recomputeRoute(passengers){
+	var points = [[40.705086,-74.016711]];
+	    passengers.forEach(passenger => {
+		points.push(passenger.location);
+	    });
+	points.push([40.759967,-74.002850]);
+	getRouteData(points, drawRoute);
+}
+
 function globalToLocal(p){
 	px = p[0];
 	py = p[1];
@@ -118,6 +127,7 @@ function drawRoute(pointlist) {
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
     ctx.moveTo(pointlist[0][0], pointlist[0][1]);
 
     pointlist.forEach(point => {
@@ -138,9 +148,9 @@ class Passenger {
 }
 
 function getPassengers() {
-    passengerList = [new Passenger([550,50], 4), 
-                     new Passenger([660,170], 3),
-                     new Passenger([1000,400], 0)];
+    passengerList = [new Passenger(localToGlobal([550,50]), 4), 
+                     new Passenger(localToGlobal([660,170]), 3),
+                     new Passenger(localToGlobal([1000,400]), 0)];
     return passengerList;
 }
 
@@ -153,7 +163,7 @@ function drawPassengers(passengerList) {
 
     ctx.lineWidth = 1;
     passengerList.forEach((passenger, index) => {
-        var [x, y] = passenger.location;
+        var [x, y] = globalToLocal(passenger.location);
         passengerHTML = `<div class="passenger"
                               style="top: ` + y + `px; left: ` + x + `px;"
                               index="` + index + `"
@@ -173,6 +183,7 @@ function drawPassengers(passengerList) {
             $(this).css("background-image", "url('passengerYellow.png')");
         }
         console.log(activePassengers());
+	recomputeRoute(activePassengers());
     });
 }
 
