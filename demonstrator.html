@@ -150,7 +150,9 @@ function recomputeRoute(passengers){
 	}else{
 		$("#tFlag").css("background-image", "url('greenflag.png')");
 	}
-	miles = getFreeMiles(passengers);
+	var miles = getFreeMiles(passengers);
+
+	$(".incentiveDisplay").text("Miles gained: "+miles);
 	getRouteData(points, drawRoute);
 }
 
@@ -511,7 +513,7 @@ function passengerClick() {
     </canvas>
     <canvas id="icanvas" class="coveringCanvas"></canvas>
     <div class="incentiveDisplay">
-        Miles gained: 5
+        Miles gained: 0
     </div>
     <div class="options">
         I want to be driven
