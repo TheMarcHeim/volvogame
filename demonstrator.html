@@ -24,7 +24,6 @@ function setup()
     canvas = document.getElementById("canvas");
     canvas.width = document.body.clientWidth;
     canvas.height = document.body.clientHeight; 
-    //canvas.addEventListener("click", printMousePos);
 
     canvasW = canvas.width;
     canvasH = canvas.height;
@@ -43,7 +42,12 @@ alert("clientX: " + event.clientX +
 function testrouting(){
 	var points = [[40.705086,-74.016711],
 		[40.759967,-74.002850]];
+	getRouteData(points, drawRoute)
+}
 
+function testpoint(p){
+	var points = [[40.705086,-74.016711],
+		p];
 	getRouteData(points, drawRoute)
 }
 
@@ -69,9 +73,9 @@ function localToGlobal(p){
 	px -= 1/2;
 	py -= 1/2;
 	px /= scaley;
-	py /= scalex;
-	px += mapCenter[0];
-	py += mapCenter[1];
+	py /= -scalex;
+	px += mapCenter[1];
+	py += mapCenter[0];
 	return [py,px];
 }
 
@@ -106,9 +110,9 @@ function getRouteData(pointlist, fun){
 }
 
 function drawRoute(pointlist) {
-    //context.clearRect(0, 0, canvas.width, canvas.height);
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.moveTo(pointlist[0][0], pointlist[0][1]);
 
     pointlist.forEach(point => {
