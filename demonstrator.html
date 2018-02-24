@@ -1,14 +1,66 @@
 <html>
 <head>
-</head>
-<body>
-<canvas id="map" width="500" height="500"></canvas>
-<br>
-<br>
-Use arrow keys to move things around.<br>
-Toggle gravity with 'g'.<br>
-Use mouse to move individual pointmasses.<br>
+<script type="text/javascript">
+function onload(){
+     setup();
+}
 
+function setup()
+{
+    map = document.getElementById("map");
+    canvas = document.getElementById("canvas");
+
+    canvas.width = document.body.clientWidth;
+    canvas.height = document.body.clientHeight;
+    map.width = document.body.clientWidth;
+    map.height = document.body.clientHeight;
+    canvasW = canvas.width;
+    canvasH = canvas.height;
+}
+</script>
+
+
+
+<style>
+  body {
+      background-color: ivory;
+  }
+  .outsideWrapper {
+      width:125px;
+      height:125px;
+      margin:20px 60px;
+      border:1px solid blue;
+  }
+  .insideWrapper {
+      width:100%;
+      height:100%;
+      position:relative;
+  }
+  .coveredImage {
+      width:100%;
+      height:100%;
+      position:absolute;
+      top:0px;
+      left:0px;
+  }
+  .coveringCanvas {
+      width:100%;
+      height:100%;
+      position:absolute;
+      top:0px;
+      left:0px;
+      background-color: rgba(255, 0, 0, .1);
+  }
+</style>
+</head>
+<body onload="onload()">
+Test
+<div class="outsideWrapper">
+    <div class="insideWrapper">
+        <img id="map" src="http://www.lynnecalder.com/house_clipart.gif" class="coveredImage">
+        <canvas id="canvas" class="coveringCanvas"></canvas>
+    </div>
+</div>
 
 </body>
 </html>
