@@ -3,6 +3,12 @@
 <meta charset="utf-8"/>
 <script src="https://cdn.jsdelivr.net/npm/graphhopper-js-api-client/dist/graphhopper-client.js"></script>
 <script type="text/javascript">
+var scalex = 1000;
+var scaley = 1000;
+var mapCenter = [40.714728,-73.998672]
+var canvasW;
+var canvasH;
+
 function onload(){
      setup();
      passengerList = getPassengers();
@@ -18,6 +24,8 @@ function setup()
     canvas.width = document.body.clientWidth;
     canvas.height = document.body.clientHeight; 
 
+    canvasW = canvas.width;
+    canvasH = canvas.height;
 
     var ctx = canvas.getContext("2d");
     ctx.moveTo(0,0);
@@ -26,13 +34,41 @@ function setup()
 }
 
 function testrouting(){
-	var points = [[49.932707,11.588051],
-		[50.3404,11.64705]];
+	var points = [[40.705116,-74.008831],
+		[40.762191,-73.970143]];
 
 	getRouteData(points)
 }
 
-function getRouteData(pointlist){
+function globalToLocal(p){
+	px = p[0];
+	py = p[1];
+	px -= mapCenter[0];
+	py -= mapCenter[1];
+	px *= scalex;
+	py *= scaley;
+	px += 1/2;
+	py += 1/2;
+	px *= canvasW;
+	py *= canvasH;
+	return [px,py];
+}
+
+function localToGlobal(p){
+	px = p[0];
+	py = p[1];
+	px /= canvasW;
+	py /= canvasH;
+	px -= 1/2;
+	py -= 1/2;
+	px /= scalex;
+	py /= scaley;
+	px += mapCenter[0];
+	py += mapCenter[1];
+	return [px,py];
+}
+
+function getRouteData(pointlist, fun){
   	var ghRouting = new GraphHopper.Routing({
       key: "792f5935-6974-4c19-9ada-2742bbcdc54f",
       vehicle: "car",
@@ -50,10 +86,10 @@ function getRouteData(pointlist){
 	var res = [];
 	delta = 5;
 	for (i = 0; i < oldArr.length; i=i+delta) {
-	  res.push(oldArr[i]);
+	  res.push(globalToLocal(oldArr[i]));
 	}
 	console.log(res);
-	//fun(res);
+	fun(res);
       })
       .catch(function(err) {
         console.error(err.message);
@@ -62,8 +98,7 @@ function getRouteData(pointlist){
 }
 
 function drawRoute(pointlist) {
-    pointlist = [[0,0], [20,20], [30, 10]];// For testing purpouses
-
+    context.clearRect(0, 0, canvas.width, canvas.height);
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     ctx.moveTo(pointlist[0][0], pointlist[0][1]);
