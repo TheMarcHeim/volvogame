@@ -195,6 +195,7 @@ function reset(driving) {
 	    $('.start').remove();
 	    $('.target').remove();
 	    $('.passengertarget').remove();
+        $(".incentiveDisplay").text("15.3 Miles to spend.");
         questList = getQuests();
         console.log(questList);
 	    drawQuests(questList);
@@ -447,7 +448,9 @@ function getPassengers() {
                      new Passenger([ 40.725868919591626, -73.99796911818456 ], 3,[ 40.73257582770698, -74.0086796982294 ]),
 	                 new Passenger([ 40.73108540368135, -73.99194441690933 ], 4,[ 40.73257582770698, -73.99863852943736 ]), 
                      new Passenger([ 40.72884976764289, -73.99796911818456 ], 3,[ 40.71245510336091, -73.99194441690933 ]),
-                     new Passenger([ 40.71467158745063, -74.01202675449342 ], 6,[ 40.73108540368135, -74.00202675449342 ])];
+                     new Passenger([ 40.71267158745063, -74.01002675449342 ], 6,[ 40.70567158745063, -74.01102675449342 ]),
+                     new Passenger([ 40.71467158745063, -74.01202675449342 ], 13,[ 40.73108540368135, -73.977 ]),
+                     new Passenger([ 40.73608540368135, -73.98 ], 14,[ 40.71, -74.005 ])];
     console.log(passengerList);
     return passengerList;
 }
