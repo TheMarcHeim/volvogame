@@ -447,6 +447,9 @@ class Quest {
         this.location = location;
 	    this.targetlocation = targetlocation;
         this.incentive = incentive;
+        this.title = "";
+        this.text = "test text";
+        this.image = null;
         this.path = [];
         this.anim = 0;
     }
@@ -508,6 +511,13 @@ function drawPassengerArrows(){
 	ctx.stroke();
 }
 
+function showQuest(quest){
+    disp = $(".pickUpDisplay").get()[0];
+    //todo: much more
+    //$(".pickUpDisplay").text(quest.text);
+    unfade(disp);
+}
+
 function drawQuests(questList){
     var body = document.getElementById("body");
     var canvas = document.getElementById("canvas");
@@ -539,7 +549,9 @@ function animate(quest){
     quest.anim+=0.004;
     if(quest.anim<1){
         setTimeout(animate, 1,quest);
-    }   
+    }else{
+        showQuest(quest);
+    }
     drawActiveQuest();
 }
 
@@ -745,6 +757,37 @@ function activePassengers() {
     return list;
 }
 
+function hideInfo(){
+    disp = $(".pickUpDisplay").get()[0];
+    fade(disp);
+}
+
+function fade(element) {
+    var op = 1;  // initial opacity
+    var timer = setInterval(function () {
+        if (op <= 0.1){
+            clearInterval(timer);
+            element.style.display = 'none';
+        }
+        element.style.opacity = op;
+        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op -= op * 0.1;
+    }, 50);
+}
+
+function unfade(element) {
+    var op = 0.1;  // initial opacity
+    element.style.display = 'block';
+    var timer = setInterval(function () {
+        if (op >= 1){
+            clearInterval(timer);
+        }
+        element.style.opacity = op;
+        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op += op * 0.1;
+    }, 10);
+}
+
 </script>
 
 
@@ -832,8 +875,39 @@ function activePassengers() {
       padding-left: 20px;
       display: flex;
       align-items: center;
-      z-index: 10;
+      z-index: 20;
   }
+  .pickUpDisplay {
+      position: relative;  
+      float: right;
+      width: 600px;
+      height: 450px;
+      background-color: white;
+      border: 1px solid grey;
+      border-radius: 5px;
+      margin-top: 10px;
+      margin-right: 10px;
+      padding-left: 20px;
+      display: flex;
+      opacity: 0;
+      align-items: center;
+      z-index: 1000;
+  }
+
+    mainText {
+    float: center;
+    max-width: 160px;
+    margin: 0;
+    padding: 5em;
+    }
+
+    nav {
+    float: left;
+    max-width: 160px;
+    margin: 0;
+    padding: 1em;
+}
+
   .options {
       position: absolute;
       width: 280px;
@@ -863,6 +937,10 @@ function activePassengers() {
     </canvas>
     <div class="incentiveDisplay">
         Miles gained: 0
+    </div>
+    <div onclick="hideInfo()" class="pickUpDisplay">
+        <nav id=><img src="passengerRed.png" alt="Image"></nav>
+        <mainText>Test</mainText>
     </div>
     <div class="options" data-option="driver">
     </div>
