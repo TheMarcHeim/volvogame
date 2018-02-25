@@ -21,7 +21,7 @@ var canFinish = 1;
 var finished = 0;
 var directDist = 0;
 var totalDist = 0;
-var start = [40.705086,-74.016711];
+var start = [40.706086,-74.014711];
 var target = [40.734967,-73.992850];
 
 var activeQuest = -1;
@@ -221,9 +221,9 @@ function updateStraightLines(x,y) {
 	    var canvas = document.getElementById("icanvas");
 	    var ctx = canvas.getContext("2d");
 
-	    ctx.lineWidth=10;
+	    ctx.lineWidth=6;
 	    ctx.lineCap="round";
-	    ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+	    ctx.strokeStyle = 'rgba(100,100,255,1)';
 	    ctx.clearRect(0, 0, canvas.width, canvas.height);
 	    ctx.beginPath();
 
@@ -321,8 +321,16 @@ function recomputeRoute(passengers) {
 	}
 	var miles = getFreeMiles(passengers);
     
-	
+	if(!finished){
 	$(".incentiveDisplay").text("Miles gained: " + miles);
+    }else{
+        var r = (totalDist/1000).toLocaleString(
+        undefined, // leave undefined to use the browser's locale,
+             // or use a string like 'en-US' to override it.
+        { minimumFractionDigits: 0 }
+);
+       $(".incentiveDisplay").text("Miles gained: " + miles+" in " +r+" km");
+    }
 	getRouteData(points, drawRoute);
 }
 
@@ -379,7 +387,7 @@ function getRouteData(pointlist, fun, ind) {
 		    //console.log(json);
 		    oldArr = json.paths[0].points.coordinates;
             totalDist = json.paths[0].distance;
-            
+
 	    //var miles = getFreeMiles(passengerList);
 	    //alert(miles);
             //$(".incentiveDisplay").text("Miles gained: " + miles+"/lost: "+totalDist-directDist);
@@ -402,9 +410,9 @@ function getRouteData(pointlist, fun, ind) {
 function drawRoute(pointlist) {
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
-	ctx.lineWidth=10;
+	ctx.lineWidth=6;
 	ctx.lineCap="round";
-	ctx.strokeStyle = 'rgba(100,100,100,0.5)';
+	ctx.strokeStyle = 'rgba(100,100,250,0.8)';
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();
     ctx.moveTo(pointlist[0][0], pointlist[0][1]);
@@ -435,11 +443,12 @@ class Passenger {
 
 function getPassengers() {
 //TODO: load CSV
-    passengerList = [new Passenger(localToGlobal([550,50]), 4,localToGlobal([550,80])), 
-                     new Passenger(localToGlobal([660,170]), 3,localToGlobal([500,80])),
-		     new Passenger(localToGlobal([750,100]), 4,localToGlobal([650,80])), 
-                     new Passenger(localToGlobal([660,130]), 3,localToGlobal([450,100])),
-                     new Passenger(localToGlobal([750,350]), 0,localToGlobal([450,280]))];
+    passengerList = [new Passenger([ 40.73481146374544, -74.0053326419654 ], 4,[ 40.73257582770698, -74.0053326419654 ]), 
+                     new Passenger([ 40.725868919591626, -73.99796911818456 ], 3,[ 40.73257582770698, -74.0086796982294 ]),
+	                 new Passenger([ 40.73108540368135, -73.99194441690933 ], 4,[ 40.73257582770698, -73.99863852943736 ]), 
+                     new Passenger([ 40.72884976764289, -73.99796911818456 ], 3,[ 40.71245510336091, -73.99194441690933 ]),
+                     new Passenger([ 40.71467158745063, -74.01202675449342 ], 6,[ 40.73108540368135, -74.00202675449342 ])];
+    console.log(passengerList);
     return passengerList;
 }
 
@@ -528,7 +537,7 @@ function drawPassengerArrows(){
 
 function showQuest(quest){
     disp = $(".pickUpDisplay").get()[0];
-    $("#mt").text(quest.text);
+    $("#mt").text(quest.title+". "+quest.text);
     //todo: much more
     //$(".pickUpDisplay").text(quest.text);
     unfade(disp);
@@ -909,7 +918,7 @@ function unfade(element) {
       position: relative;  
       float: right;
       width: 600px;
-      height: 100px;
+      height: 110px;
       background-color: white;
       border: 1px solid grey;
       border-radius: 5px;
@@ -929,6 +938,7 @@ function unfade(element) {
     margin: 0;
     padding: 1em;
 }
+
 
   .options {
       position: absolute;
@@ -966,7 +976,7 @@ function unfade(element) {
         Miles gained: 0
     </div>
     <div onclick="hideInfo()" class="pickUpDisplay">
-        <nav id=><img src="passengerRed.png" alt="Image"></nav>
+        <nav id=><img height="80" src="car.png" alt="Image"></nav>
         <mainText id="mt">Test</mainText>
     </div>
     <div class="notificationBoard"></div>
