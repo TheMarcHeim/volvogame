@@ -455,12 +455,24 @@ class Quest {
     }
 }
 
-
 function getQuests() {
+
+data = [["Gas station", "Even Volvos do have to get a little Fuel in order to get up to speed. Do you want to take on this quest and bring the car to a gas station.", 40.704823, -74.014958, 40.735828, -74.006001, 7],["Service", "Do you want to venture out to the proud craftsmen at the local garage with the purpose of bringing the car in for an oil change.", 40.704784, -74.013362, 40.728298, -73.990752, 5],["Cleaning", "Do you want to bring our fleet car to the place of air fresheners and the worst enemy of the cat.", 40.704151, -74.014281, 40.726202, -73.998492, 4]]
+
+questList = [];
+data.forEach(quest => {
+        nQuest = new Quest([quest[2],quest[3]], quest[6],[quest[4],quest[5]])
+        nQuest.text = quest[1];
+        nQuest.title = quest[0];
+        questList.push(nQuest);
+    });
+
+
+
 //TODO: load CSV
-    questList = [new Quest(localToGlobal([550,50]), 4,localToGlobal([350,80])), 
-                     new Quest(localToGlobal([660,170]), 3,localToGlobal([500,80])),
-		     new Quest(localToGlobal([750,100]), 4,localToGlobal([550,80])), ];
+    //questList = [new Quest(localToGlobal([550,50]), 4,localToGlobal([350,80])), 
+     //                new Quest(localToGlobal([660,170]), 3,localToGlobal([500,80])),
+	//	     new Quest(localToGlobal([750,100]), 4,localToGlobal([550,80])), ];
     return questList;
 }
 
@@ -513,6 +525,7 @@ function drawPassengerArrows(){
 
 function showQuest(quest){
     disp = $(".pickUpDisplay").get()[0];
+    $("#mt").text(quest.text);
     //todo: much more
     //$(".pickUpDisplay").text(quest.text);
     unfade(disp);
@@ -940,7 +953,7 @@ function unfade(element) {
     </div>
     <div onclick="hideInfo()" class="pickUpDisplay">
         <nav id=><img src="passengerRed.png" alt="Image"></nav>
-        <mainText>Test</mainText>
+        <mainText id="mt">Test</mainText>
     </div>
     <div class="options" data-option="driver">
     </div>
