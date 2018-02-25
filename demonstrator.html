@@ -36,6 +36,8 @@ function onload(){
 
 $(document).ready(function(){
 
+    Notification.requestPermission();
+
     $(".options").attr("data-option", "driver");
     $(".options").html("I want to be driven");
 
@@ -457,7 +459,9 @@ class Quest {
 
 function getQuests() {
 
-data = [["Gas station", "Even Volvos do have to get a little Fuel in order to get up to speed. Do you want to take on this quest and bring the car to a gas station.", 40.704823, -74.014958, 40.735828, -74.006001, 7],["Service", "Do you want to venture out to the proud craftsmen at the local garage with the purpose of bringing the car in for an oil change.", 40.704784, -74.013362, 40.728298, -73.990752, 5],["Cleaning", "Do you want to bring our fleet car to the place of air fresheners and the worst enemy of the cat.", 40.704151, -74.014281, 40.726202, -73.998492, 4]]
+data = [["Gas station", "Even Volvos do have to get a little Fuel in order to get up to speed. Do you want to take on this quest and bring the car to a gas station. Gains you 7 miles", 40.704823, -74.014958, 40.735828, -74.006001, 7],
+        ["Service", "Do you want to venture out to the proud craftsmen at the local garage with the purpose of bringing the car in for an oil change. Gains you 6 miles.", 40.704784, -74.013362, 40.728298, -73.990752, 5],
+        ["Cleaning", "Do you want to bring our fleet car to the place of air fresheners and the worst enemy of the cat. Gains you 7 miles.", 40.704151, -74.014281, 40.726202, -73.998492, 4]]
 
 questList = [];
 data.forEach(quest => {
@@ -894,25 +898,19 @@ function unfade(element) {
       position: relative;  
       float: right;
       width: 600px;
-      height: 450px;
+      height: 100px;
       background-color: white;
       border: 1px solid grey;
       border-radius: 5px;
       margin-top: 10px;
       margin-right: 10px;
       padding-left: 20px;
+      padding-top: 20px;
       display: flex;
       opacity: 0;
       align-items: center;
       z-index: 1000;
   }
-
-    mainText {
-    float: center;
-    max-width: 160px;
-    margin: 0;
-    padding: 5em;
-    }
 
     nav {
     float: left;
@@ -940,6 +938,11 @@ function unfade(element) {
       -ms-user-select: none;
       user-select: none;
   }
+  .notificationBoard {
+      position: absolute;
+      width: 200px;
+      height: 40px;
+  }
 </style>
 </head>
 <body id="body" onload="onload()">
@@ -955,6 +958,7 @@ function unfade(element) {
         <nav id=><img src="passengerRed.png" alt="Image"></nav>
         <mainText id="mt">Test</mainText>
     </div>
+    <div class="notificationBoard"></div>
     <div class="options" data-option="driver">
     </div>
 </body>
