@@ -123,7 +123,6 @@ function drawPath(from, to){
 	    ghRouting.addPoint(new GHInput(to[0], to[1]));
 
 	    ghRouting.doRequest().then(function(json) {
-            console.log(json);
             var canvas = document.getElementById("canvas");
             var ctx = canvas.getContext("2d");
             ctx.lineWidth=10;
@@ -754,6 +753,18 @@ function passengerClickHandler() {
         var startY = $(".passengerStart").attr("data-Y");
 
         drawPath([startX, startY], [destinationXGlobal, destinationYGlobal]);
+
+        function spawnNotification(time) {
+            console.log("notification");
+
+            var options = {
+                body: "Be ready at " + time
+            }
+            var n = new Notification("Volvo driver available", options);
+            setTimeout(n.close.bind(n), 5000); 
+        }
+
+        spawnNotification("8:30");
     } 
 }
 
