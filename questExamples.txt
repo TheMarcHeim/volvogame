@@ -1,0 +1,3 @@
+Gas station, Even Volvos do have to get a little Fuel in order to get up to speed. Do you want to take on this quest and bring the car to a gas station., 40.704723, -74.014958, 40.735828, -74.006001, 7
+Service, Do you want to venture out to the proud craftsmen at the local garage with the purpose of bringing the car in for an oil change., 40.705784, -74.013362, 40.728298, -73.990752, 5
+Cleaning, Do you want to bring our fleet car to the place of air fresheners and the worst enemy of the cat., 40.704151, -74.014281, 40.728298, -73.990752, 4
